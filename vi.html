@@ -99,6 +99,28 @@ button.btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .trial .val.bad{color:var(--warn)}
 .manual{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:6px}
 .manual input{width:5em;font:inherit;font-family:var(--mono);background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:4px 6px}
+.odkgrid{display:grid;grid-template-columns:auto repeat(3,minmax(0,1fr));gap:8px;align-items:stretch;margin-top:12px}
+.odkgrid .sylh{font-family:var(--mono);font-weight:600;font-size:18px;display:flex;align-items:center;padding-right:6px}
+.odkgrid .colh{font-size:12px;color:var(--muted);text-align:center}
+.slot{border:1px solid var(--line);border-radius:10px;padding:8px;background:var(--bg);display:flex;flex-direction:column;gap:6px;min-width:0}
+.slot.live{border-color:var(--accent);background:var(--accent-weak)}
+.slot.ok{border-color:color-mix(in srgb,var(--accent) 45%,var(--line));background:var(--surface)}
+.slot.bad{border-color:var(--warn)}
+.slot .hd{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.slot .rate{font-family:var(--mono);font-size:22px;font-weight:600;line-height:1.1}
+.slot .rate small{font-size:12px;color:var(--muted);font-weight:400}
+.slot .st{font-size:12px;color:var(--muted);min-height:2.4em}
+.slot .st.warn{color:var(--warn)}
+.slot svg{width:100%;height:40px;display:block}
+.slot .bar{height:4px;background:var(--line);border-radius:2px;overflow:hidden}.slot .bar i{display:block;height:100%;width:0;background:var(--accent)}
+.slot .acts{display:flex;flex-wrap:wrap;gap:4px}
+.slot .acts button{font:inherit;font-size:12px;padding:3px 8px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.slot .acts button.main{background:var(--accent);border-color:var(--accent);color:var(--surface);font-weight:600}
+.slot .acts button:disabled{opacity:.4;cursor:not-allowed}
+.slot .acts button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.slot .man{display:flex;gap:4px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.slot .man input{width:4.2em;font:inherit;font-family:var(--mono);font-size:12px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:2px 4px}
+@media (max-width:640px){.odkgrid{grid-template-columns:minmax(0,1fr)}.odkgrid .colh{display:none}.odkgrid .sylh{padding-top:8px}}
 .odksum{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
 .odksum div{border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--bg)}
 .odksum b{display:block;font-family:var(--mono);font-size:20px}
@@ -206,15 +228,8 @@ textarea#csvout{width:100%;min-height:90px;font-family:var(--mono);font-size:12p
     <div class="mod-h"><div><span class="tag" data-t="odkTag"></span><h2 data-t="odkH"></h2></div><span class="src" data-t="odkSrc"></span></div>
     <div class="mod-b">
       <p class="note" style="margin-top:10px" data-t="odkHow"></p>
-      <div class="syl" role="group" data-ta="sylLabel">
-        <button type="button" data-syl="pa" aria-pressed="true">/pa/</button>
-        <button type="button" data-syl="ta" aria-pressed="false">/ta/</button>
-        <button type="button" data-syl="ka" aria-pressed="false">/ka/</button>
-      </div>
-      <button type="button" class="pad" id="pad" aria-live="polite"><span class="big" id="pad-big">/pa/</span><span id="pad-msg"></span></button>
-      <div class="prog" aria-hidden="true"><i id="prog"></i></div>
-      <div class="row" style="margin-top:10px"><button type="button" class="btn" id="odk-start" data-t="odkStart"></button><span class="note" id="odk-hint"></span></div>
-      <div class="trials" id="trials"></div>
+      <p class="banner" id="mic-note" hidden></p>
+      <div class="odkgrid" id="odkgrid"></div>
       <div class="odksum" id="odksum"></div>
     </div>
   </section>
@@ -370,7 +385,7 @@ vi:{brand:"OHF-SQ · phiếu thử nghiệm",brandSub:"Bảng hỏi tự báo c�
  toTests:"Sang phần test",missing:"Còn thiếu: ",allDone:"Đã trả lời đủ.",foodsLeft:" món ăn",
  tH:"Test ngắn",tLead:"Hai chức năng người cao tuổi không tự nhận ra được, nên đo trực tiếp. Áp lực lưỡi (H5) không đo trong phiên bản này.",
  odkTag:"H4 · Vận động lưỡi–môi",odkH:"Oral diadochokinesis /pa/ /ta/ /ka/",odkSrc:"JSG: < 6,0 lần/giây ở bất kỳ âm nào",
- odkHow:"Cách làm: bấm \"Bắt đầu\", đếm ngược 3 giây rồi người tham gia nói âm đó nhanh và liên tục trong 6 giây. Người khám chạm vào ô lớn (hoặc phím Space) mỗi lần nghe một âm. Kết quả lấy 5 giây kể từ âm đầu tiên, chia cho 5 ra số lần/giây. Mỗi âm làm 3 lần, lấy trung bình.",
+ odkHow:"Cách làm: bấm \"Ghi âm\" ở ô cần đo và cho phép micro. Sau 3 giây đếm ngược, người tham gia nói âm đó nhanh và liên tục trong 6 giây. Phiếu tự đếm số âm: lấy 5 giây kể từ âm đầu tiên, chia cho 5 ra số lần/giây. Mỗi âm có 3 ô; ô nào làm hỏng thì bấm \"Làm lại\". Nghe lại bản ghi để kiểm tra và sửa ±1 nếu máy đếm lệch.",rec:"Ghi âm",redo:"Làm lại",play:"Nghe",manualBtn:"Lưu",manualShort:"Nhập tay số âm/5 giây:",speak:"Đang ghi… nói liên tục ",firstAt:"Âm đầu ở giây ",quiet:"Không nghe rõ tiếng, làm lại và nói gần micro hơn",noneFound:"Không tìm thấy âm nào, làm lại",adjusted:"đã sửa tay",micNote:"Không mở được micro ở đây (ví dụ khi xem trong Claude). Mở phiếu qua link GitHub (https) và cho phép micro, hoặc nghe và nhập tay số âm đếm được trong 5 giây.",
  sylLabel:"Chọn âm",odkStart:"Bắt đầu lần tiếp theo",padIdle:"Bấm \"Bắt đầu lần tiếp theo\" bên dưới",ready:"Chuẩn bị…",tapEach:"Chạm mỗi lần nghe ",enough:"Đã đủ 3 lần cho ",enough2:". Xóa một lần để làm lại.",doneSyl:"Xong ",nextSyl:". Chuyển sang ",
  trial:"Lần",manualNote:"Nhập tay",perS:"/s",syllables:"âm",in5:" âm trong 5 giây = ",perSec:" lần/giây",noTap:"Không ghi nhận lần chạm nào",late:"Âm đầu trễ hơn 1 giây, cửa sổ 5 giây bị thiếu — làm lại",invalid:"Không hợp lệ",
  manualTxt:"Hoặc nhập tay số âm đếm được trong 5 giây (từ bản ghi âm):",addTrial:"Thêm lần",trialsOf:" lần",notYet:"chưa đo",
@@ -416,7 +431,7 @@ en:{brand:"OHF-SQ · pilot form",brandSub:"Self-report questionnaire + 2 brief t
  toTests:"Go to tests",missing:"Still missing: ",allDone:"All questions answered.",foodsLeft:" foods",
  tH:"Brief tests",tLead:"Older adults cannot perceive these functions themselves, so they are measured directly. Tongue pressure (H5) is not measured in this version.",
  odkTag:"H4 · Tongue–lip motor function",odkH:"Oral diadochokinesis /pa/ /ta/ /ka/",odkSrc:"JSG: < 6.0 per second for any syllable",
- odkHow:"Press \"Start\". After a 3-second countdown the participant repeats the syllable as fast as possible for 6 seconds. The examiner taps the large pad (or presses Space) for every syllable heard. The score uses the 5 seconds from the first syllable, divided by 5. Each syllable is done 3 times and averaged.",
+ odkHow:"Press \"Record\" in the slot to be measured and allow the microphone. After a 3-second countdown the participant repeats the syllable as fast as possible for 6 seconds. The form counts the syllables itself, using the 5 seconds from the first syllable divided by 5. Each syllable has 3 slots; if a trial goes wrong, press \"Redo\". Play the recording back to check, and correct by ±1 if the count is off.",rec:"Record",redo:"Redo",play:"Play",manualBtn:"Save",manualShort:"Enter count per 5 s:",speak:"Recording… keep saying ",firstAt:"First syllable at ",quiet:"Speech too quiet; redo closer to the microphone",noneFound:"No syllables found; redo",adjusted:"corrected",micNote:"The microphone cannot be opened here (for example inside Claude). Open the form from its GitHub (https) link and allow the microphone, or listen and enter the count for 5 seconds by hand.",
  sylLabel:"Choose syllable",odkStart:"Start next trial",padIdle:"Press \"Start next trial\" below",ready:"Get ready…",tapEach:"Tap for every ",enough:"Three trials done for ",enough2:". Delete one to redo it.",doneSyl:"Finished ",nextSyl:". Move on to ",
  trial:"Trial",manualNote:"Entered manually",perS:"/s",syllables:"syll.",in5:" syllables in 5 s = ",perSec:" per second",noTap:"No taps recorded",late:"First syllable came after 1 s, so the 5-second window is incomplete — repeat",invalid:"Invalid",
  manualTxt:"Or enter the number of syllables counted in 5 seconds (from a recording):",addTrial:"Add trial",trialsOf:" trials",notYet:"not measured",
@@ -451,7 +466,7 @@ document.querySelectorAll("[data-ta]").forEach(el=>el.setAttribute("aria-label",
 $("#csvout").setAttribute("aria-label",T.csvLabel);$("#tci-svg").setAttribute("aria-label",T.tciAria);
 $("#f-sex").innerHTML="";T.sexOpts.forEach((o,i)=>{const op=document.createElement("option");op.value=i?o:"";op.textContent=o;$("#f-sex").append(op)});
 $("#f-setting").innerHTML="";T.setOpts.forEach((o,i)=>{const op=document.createElement("option");op.value=i?o:"";op.textContent=o;$("#f-setting").append(op)});
-$("#f-id").placeholder=LANG==="vi"?"VD: HCM-001":"e.g. HCM-001";$("#pad-msg").textContent=T.padIdle;
+$("#f-id").placeholder=LANG==="vi"?"VD: HCM-001":"e.g. HCM-001";
 
 const FOODS=[[1,"Cháo trắng","Rice porridge","chao"],[1,"Đậu hũ non","Silken tofu","dauhu"],[1,"Chuối chín","Ripe banana","chuoi"],[1,"Bánh flan","Crème caramel (flan)","flan"],
  [2,"Cơm trắng","Steamed rice","com"],[2,"Phở hoặc bún","Phở or rice noodles","pho"],[2,"Cá kho","Braised fish","cakho"],[2,"Trứng luộc","Boiled egg","trung"],
@@ -461,8 +476,8 @@ const FOODS=[[1,"Cháo trắng","Rice porridge","chao"],[1,"Đậu hũ non","Sil
 const IDX_APPLE=15,IDX_CARROT=16,SYL=["pa","ta","ka"];
 
 const blank=()=>({info:{id:"",date:new Date().toISOString().slice(0,10),age:"",sex:"",setting:"",exam:""},
- eat:Array(10).fill(null),b2:null,b3:null,food:Array(20).fill(null),xi:Array(5).fill(null),d1:null,d2:null,odk:{pa:[],ta:[],ka:[]},tci:Array(9).fill(null)});
-let S=blank();const KEY="ohf-sq-draft-v2-"+LANG;
+ eat:Array(10).fill(null),b2:null,b3:null,food:Array(20).fill(null),xi:Array(5).fill(null),d1:null,d2:null,odk:{pa:[null,null,null],ta:[null,null,null],ka:[null,null,null]},tci:Array(9).fill(null)});
+let S=blank();const KEY="ohf-sq-draft-v3-"+LANG;
 try{const raw=localStorage.getItem(KEY);if(raw){S=Object.assign(blank(),JSON.parse(raw));$("#draft-note").textContent=T.draftBack}}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 
@@ -507,7 +522,7 @@ function sc(){const r={};
  r.b1=(S.food[IDX_APPLE]===0||S.food[IDX_CARROT]===0)?1:((S.food[IDX_APPLE]===null||S.food[IDX_CARROT]===null)?null:0);
  r.H6=(r.b1===1||S.b2===1||S.b3===1)?true:((r.b1===0&&S.b2===0&&S.b3===0)?false:null);
  r.xi=allAns(S.xi)?sum(S.xi):null;r.H2=r.xi===null?null:r.xi>=15;
- r.odk={};let any=false,allDone=true;SYL.forEach(s=>{const ok=S.odk[s].filter(t=>t.valid);if(ok.length){const m=ok.reduce((a,t)=>a+t.rate,0)/ok.length;r.odk[s]={mean:Math.round(m*100)/100,n:ok.length};if(m<6)any=true}else{r.odk[s]=null;allDone=false}});
+ r.odk={};let any=false,allDone=true;SYL.forEach(s=>{const ok=S.odk[s].filter(t=>t&&t.valid);if(ok.length){const m=ok.reduce((a,t)=>a+t.rate,0)/ok.length;r.odk[s]={mean:Math.round(m*100)/100,n:ok.length};if(m<6)any=true}else{r.odk[s]=null;allDone=false}});
  r.H4=any?true:(allDone?false:null);
  r.tci=allAns(S.tci)?Math.round(sum(S.tci)/18*1000)/10:null;r.H1=r.tci===null?null:r.tci>=50;
  r.H5="nm";return r;}
@@ -553,41 +568,90 @@ function legend(){const L=$("#tci-legend");const sw=(v)=>{const id="sw"+v+"-";co
  L.innerHTML=`<div class="note"></div>`+[0,1,2].map(v=>`<div class="sw">${sw(v)}<span></span></div>`).join("")+`<div class="note"><span id="tci-scored"></span> · <span class="tcinote"></span></div>`;
  L.firstChild.textContent=T.tciHow;L.querySelectorAll(".sw span").forEach((el,v)=>el.textContent=T["tci"+v]);L.querySelector(".tcinote").textContent=(LANG==="vi"?"Hàng trên là ":"Top row is the ")+T.tciBack;}
 
-/* ---------- ODK ---------- */
-let syl="pa",run=null;
-document.querySelectorAll("[data-syl]").forEach(b=>b.addEventListener("click",()=>{if(run)return;syl=b.dataset.syl;document.querySelectorAll("[data-syl]").forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"));$("#pad-big").textContent="/"+syl+"/";renderTrials()}));
-function analyse(taps){if(!taps.length)return{valid:false,count:0,rate:0,t0:null,why:T.noTap};
- const t0=taps[0];const n=taps.filter(t=>t>=t0&&t<t0+5000).length;const rate=n/5;
- if(t0>1000)return{valid:false,count:n,rate,t0,why:T.late};return{valid:true,count:n,rate,t0};}
-function startTrial(){if(run)return;if(S.odk[syl].length>=3){$("#odk-hint").textContent=T.enough+"/"+syl+"/"+T.enough2;return}
- const pad=$("#pad"),msg=$("#pad-msg"),big=$("#pad-big"),bar=$("#prog");$("#odk-start").disabled=true;$("#odk-hint").textContent="";
- let c=3;big.textContent=c;msg.textContent=T.ready;run={phase:"count",taps:[]};
- const tick=setInterval(()=>{c--;if(c>0){big.textContent=c;return}clearInterval(tick);
-  run.phase="rec";run.start=performance.now();pad.classList.add("live");big.textContent="0";msg.textContent=T.tapEach+"/"+syl+"/";pad.focus();
-  const step=()=>{if(!run)return;const el=performance.now()-run.start;bar.style.width=Math.min(100,el/60)+"%";if(el>=6000){finish();return}requestAnimationFrame(step)};requestAnimationFrame(step)},1000);}
-function tap(e){if(!run||run.phase!=="rec")return;if(e)e.preventDefault();const t=performance.now()-run.start;if(t<6000){run.taps.push(Math.round(t));$("#pad-big").textContent=run.taps.length}}
-function finish(){const taps=run.taps;run=null;$("#pad").classList.remove("live");$("#prog").style.width="0";$("#odk-start").disabled=false;
- const a=analyse(taps);S.odk[syl].push(Object.assign({taps,manual:false},a));save();
- $("#pad-big").textContent="/"+syl+"/";$("#pad-msg").textContent=a.valid?`${T.trial} ${S.odk[syl].length}: ${a.count}${T.in5}${fmt(a.rate,1)}${T.perSec}`:a.why;
- if(a.valid&&S.odk[syl].length>=3){const nx=SYL.find(s=>S.odk[s].length<3);if(nx)$("#odk-hint").textContent=T.doneSyl+"/"+syl+"/"+T.nextSyl+"/"+nx+"/.";}
- renderTrials();upd();}
-$("#pad").addEventListener("pointerdown",tap);
-document.addEventListener("keydown",e=>{if(run&&run.phase==="rec"&&(e.code==="Space"||e.key===" "))tap(e)});
-$("#pad").addEventListener("click",e=>e.preventDefault());
-$("#odk-start").addEventListener("click",startTrial);
-function trialSvg(t){const W=300,x=ms=>4+ms/6000*(W-8);let s=`<svg viewBox="0 0 ${W} 26" preserveAspectRatio="none" aria-hidden="true"><rect x="4" y="11" width="${W-8}" height="4" rx="2" fill="var(--line)"/>`;
- if(t.t0!==null&&!t.manual){s+=`<rect x="${x(t.t0)}" y="5" width="${x(Math.min(6000,t.t0+5000))-x(t.t0)}" height="16" rx="3" fill="var(--accent)" fill-opacity=".14"/>`;
-  t.taps.forEach(m=>{const inn=m>=t.t0&&m<t.t0+5000;s+=`<line x1="${x(m)}" x2="${x(m)}" y1="6" y2="20" stroke="${inn?"var(--accent)":"var(--muted)"}" stroke-width="1.5"/>`})}
- for(let k=0;k<=6;k++)s+=`<line x1="${x(k*1000)}" x2="${x(k*1000)}" y1="22" y2="25" stroke="var(--muted)" stroke-width="1"/>`;return s+"</svg>";}
-function renderTrials(){const box=$("#trials");box.innerHTML="";
- S.odk[syl].forEach((t,i)=>{const d=document.createElement("div");d.className="trial";
-  const lab=document.createElement("div");const b=document.createElement("b");b.textContent=`${T.trial} ${i+1}`;const del=document.createElement("button");del.type="button";del.className="btn ghost sm";del.textContent=T.del;del.addEventListener("click",()=>{S.odk[syl].splice(i,1);save();renderTrials();upd()});lab.append(b,document.createElement("br"),del);
-  const g=document.createElement("div");if(t.manual){g.className="note";g.textContent=T.manualNote}else g.innerHTML=trialSvg(t);
-  const v=document.createElement("div");v.className="val"+(t.valid?"":" bad");v.textContent=t.valid?`${t.count} ${T.syllables} · ${fmt(t.rate,1)}${T.perS}`:(t.why||T.invalid);d.append(lab,g,v);box.append(d)});
- if(S.odk[syl].length<3){const m=document.createElement("div");m.className="manual";const sp=document.createElement("span");sp.textContent=T.manualTxt;const inp=document.createElement("input");inp.type="number";inp.min=0;inp.max=60;inp.id="man-n";inp.setAttribute("aria-label",T.manualTxt);
-  const add=document.createElement("button");add.type="button";add.className="btn ghost sm";add.textContent=T.addTrial;m.append(sp,inp,add);box.append(m);
-  add.addEventListener("click",()=>{const n=parseInt(inp.value,10);if(isNaN(n))return;S.odk[syl].push({taps:[],manual:true,valid:true,count:n,rate:n/5,t0:null});save();renderTrials();upd()})}
- const r=sc();$("#odksum").innerHTML=SYL.map(s=>{const o=r.odk[s];return`<div><small>/${s}/ · ${S.odk[s].filter(t=>t.valid).length}/3${T.trialsOf}</small><b class="num">${o?fmt(o.mean,2):"–"}</b>${o?(o.mean<6?`<span class="pill pos">&lt; 6${LANG==="vi"?",":"."}0</span>`:`<span class="pill neg">≥ 6${LANG==="vi"?",":"."}0</span>`):`<span class="pill na">${T.notYet}</span>`}</div>`}).join("");}
+/* ---------- ODK: automatic syllable counting, 3 slots per syllable ---------- */
+/* Syllable counter for ODK recordings. samples: Float32Array, sr: sample rate, go: sample index where speaking may begin */
+function detectSyllables(samples,sr,go){
+ const hop=Math.round(sr*0.01),n=Math.floor(samples.length/hop),env=new Float32Array(n);
+ for(let f=0;f<n;f++){let s=0;for(let k=f*hop;k<(f+1)*hop;k++)s+=samples[k]*samples[k];env[f]=Math.sqrt(s/hop)}
+ const sm=new Float32Array(n);for(let f=0;f<n;f++){let s=0,c=0;for(let k=f-2;k<=f+2;k++)if(k>=0&&k<n){s+=env[k];c++}sm[f]=s/c}
+ const db=Array.from(sm,v=>20*Math.log10(v+1e-7));
+ const goF=Math.floor(go/hop);const seg=db.slice(goF).slice().sort((a,b)=>a-b);
+ const pct=p=>seg[Math.min(seg.length-1,Math.max(0,Math.floor(p*seg.length)))];
+ const all=db.slice().sort((a,b)=>a-b);const noise=Math.min(all[Math.floor(.1*all.length)],pct(.1));const top=pct(.98);
+ if(top-noise<12)return{ok:false,why:"quiet",peaks:[],t0:null,count:0,db,hop,goF,thr:null};
+ const thr=noise+0.35*(top-noise);
+ const maxima=[];for(let f=Math.max(goF,3);f<n-3;f++){if(db[f]<thr)continue;let m=true;for(let k=f-3;k<=f+3;k++)if(db[k]>db[f]||(db[k]===db[f]&&k<f)){m=false;break}if(m)maxima.push(f)}
+ const kept=[];
+ for(const f of maxima){if(!kept.length){kept.push(f);continue}const p=kept[kept.length-1];let mn=Infinity;for(let k=p;k<=f;k++)mn=Math.min(mn,db[k]);
+  if(f-p>=6&&mn<Math.min(db[p],db[f])-4)kept.push(f);else if(db[f]>db[p])kept[kept.length-1]=f}
+ if(!kept.length)return{ok:false,why:"none",peaks:[],t0:null,count:0,db,hop,goF,thr};
+ const ons=kept.map((f,i)=>{const lo=i?kept[i-1]:goF;let b=f;for(let k=f;k>=lo;k--){if(db[k]<db[b])b=k}let o=b;while(o<f&&db[o]<thr)o++;if(i===0){o=f;while(o>goF&&db[o-1]>=thr)o--}return o});
+ const t0=(ons[0]-goF)*0.01;const onsT=ons.map(f=>(f-goF)*0.01);const count=onsT.filter(t=>t>=t0-1e-9&&t<t0+5).length;
+ return{ok:true,peaks:kept.map(f=>(f-goF)*0.01),onsets:onsT,t0,count,db,hop,goF,thr};}
+
+
+const AUD={};let busy=null,mic=null,actx=null;
+function micNote(){const n=$("#mic-note");n.textContent=T.micNote;n.hidden=false}
+async function ensureMic(){if(mic)return;if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw new Error("nomic");
+ mic=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
+ actx=new (window.AudioContext||window.webkitAudioContext)();}
+function slotKey(s,i){return s+"-"+i}
+async function record(s,i){if(busy)return;
+ try{await ensureMic()}catch(e){micNote();return}
+ if(actx.state==="suspended")await actx.resume();
+ const sr=actx.sampleRate,src=actx.createMediaStreamSource(mic),hp=actx.createBiquadFilter(),lp=actx.createBiquadFilter(),proc=actx.createScriptProcessor(2048,1,1),mute=actx.createGain();
+ hp.type="highpass";hp.frequency.value=120;lp.type="lowpass";lp.frequency.value=4000;mute.gain.value=0;
+ const chunks=[];let cap=false;proc.onaudioprocess=e=>{if(cap)chunks.push(new Float32Array(e.inputBuffer.getChannelData(0)))};
+ src.connect(hp);hp.connect(lp);lp.connect(proc);proc.connect(mute);mute.connect(actx.destination);
+ busy={s,i,phase:"count",n:3,t:0};renderODK();
+ const wait=ms=>new Promise(r=>setTimeout(r,ms));
+ await wait(1000);busy.n=2;renderODK();await wait(1000);busy.n=1;cap=true;renderODK();await wait(1000);
+ busy.phase="rec";busy.start=performance.now();renderODK();
+ const tick=()=>{if(!busy||busy.phase!=="rec")return;const el=performance.now()-busy.start;const b=document.querySelector(`#slot-${s}-${i} .bar i`);if(b)b.style.width=Math.min(100,el/60)+"%";if(el<6000)requestAnimationFrame(tick)};requestAnimationFrame(tick);
+ await wait(6150);cap=false;try{src.disconnect();proc.disconnect();hp.disconnect();lp.disconnect();mute.disconnect()}catch(e){}
+ let len=0;chunks.forEach(c=>len+=c.length);const x=new Float32Array(len);let o=0;chunks.forEach(c=>{x.set(c,o);o+=c.length});
+ const go=Math.min(len,Math.round(sr*1.0));const end=Math.min(len,go+Math.round(sr*6));const xs=x.slice(0,end);
+ AUD[slotKey(s,i)]={x:xs.slice(go),sr};
+ const r=detectSyllables(xs,sr,go);
+ let rec;
+ if(!r.ok)rec={valid:false,count:0,rate:0,t0:null,why:r.why==="quiet"?T.quiet:T.noneFound,onsets:[],env:envPts(r,6)};
+ else if(r.t0>1.0)rec={valid:false,count:r.count,rate:r.count/5,t0:r.t0,why:T.late,onsets:r.onsets.map(v=>+v.toFixed(2)),env:envPts(r,6)};
+ else rec={valid:true,count:r.count,rate:r.count/5,t0:+r.t0.toFixed(2),onsets:r.onsets.map(v=>+v.toFixed(2)),env:envPts(r,6),adj:0};
+ S.odk[s][i]=rec;busy=null;save();renderODK();upd();}
+function envPts(r,secs){const pts=[];const n=120,f0=r.goF,span=Math.round(secs*100);const seg=r.db.slice(f0,f0+span);if(!seg.length)return pts;
+ const lo=Math.min(...seg),hi=Math.max(...seg);for(let k=0;k<n;k++){const a=Math.floor(k*seg.length/n),b=Math.max(a+1,Math.floor((k+1)*seg.length/n));let m=-Infinity;for(let j=a;j<b;j++)m=Math.max(m,seg[j]);pts.push(+((m-lo)/(hi-lo||1)).toFixed(2))}return pts;}
+function play(s,i){const a=AUD[slotKey(s,i)];if(!a||!actx)return;const buf=actx.createBuffer(1,a.x.length,a.sr);buf.copyToChannel(a.x,0);const n=actx.createBufferSource();n.buffer=buf;n.connect(actx.destination);n.start();}
+function adjust(s,i,d){const t=S.odk[s][i];if(!t)return;t.count=Math.max(0,t.count+d);t.rate=t.count/5;t.adj=(t.adj||0)+d;if(t.why===T.noneFound||t.why===T.quiet){t.valid=t.count>0;if(t.valid)t.why=""}save();renderODK();upd();}
+function manual(s,i,n){S.odk[s][i]={valid:true,manual:true,count:n,rate:n/5,t0:null,onsets:[],env:[]};save();renderODK();upd();}
+function clearSlot(s,i){S.odk[s][i]=null;delete AUD[slotKey(s,i)];save();renderODK();upd();}
+function slotSvg(t){const W=240,H=40,x=sec=>2+sec/6*(W-4);let s=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">`;
+ if(t&&t.t0!==null&&t.t0!==undefined)s+=`<rect x="${x(t.t0)}" y="0" width="${x(Math.min(6,t.t0+5))-x(t.t0)}" height="${H}" fill="var(--accent)" fill-opacity=".12"/>`;
+ if(t&&t.env&&t.env.length){const n=t.env.length;s+=`<polyline fill="none" stroke="var(--muted)" stroke-width="1" points="${t.env.map((v,k)=>`${(2+k/(n-1)*(W-4)).toFixed(1)},${(H-3-v*(H-8)).toFixed(1)}`).join(" ")}"/>`}
+ if(t&&t.onsets)t.onsets.forEach(o=>{const inn=t.t0!==null&&o>=t.t0&&o<t.t0+5;s+=`<line x1="${x(o)}" x2="${x(o)}" y1="${H-10}" y2="${H}" stroke="${inn?"var(--accent)":"var(--muted)"}" stroke-width="1.4"/>`});
+ for(let k=0;k<=6;k++)s+=`<line x1="${x(k)}" x2="${x(k)}" y1="${H-2}" y2="${H}" stroke="var(--line)"/>`;return s+"</svg>";}
+function renderODK(){const g=$("#odkgrid");g.innerHTML="";
+ g.append(document.createElement("div"));[0,1,2].forEach(i=>{const h=document.createElement("div");h.className="colh";h.textContent=`${T.trial} ${i+1}`;g.append(h)});
+ SYL.forEach(s=>{const h=document.createElement("div");h.className="sylh";h.textContent="/"+s+"/";g.append(h);
+  [0,1,2].forEach(i=>{const t=S.odk[s][i],live=busy&&busy.s===s&&busy.i===i;const d=document.createElement("div");d.id=`slot-${s}-${i}`;
+   d.className="slot"+(live?" live":t?(t.valid?" ok":" bad"):"");
+   const hd=document.createElement("div");hd.className="hd";const l1=document.createElement("span");l1.textContent=`/${s}/ · ${T.trial} ${i+1}`;const l2=document.createElement("span");l2.textContent=t&&t.manual?T.manualNote:(t&&t.adj?T.adjusted:"");hd.append(l1,l2);
+   const rate=document.createElement("div");rate.className="rate";
+   if(live)rate.textContent=busy.phase==="count"?String(busy.n):"●";
+   else if(t){rate.textContent=fmt(t.rate,1)+" ";const sm=document.createElement("small");sm.textContent=`/s · ${t.count} ${T.syllables}`;rate.append(sm)}else rate.textContent="–";
+   const st=document.createElement("div");st.className="st";
+   if(live)st.textContent=busy.phase==="count"?T.ready:T.speak+"/"+s+"/";
+   else if(t){if(!t.valid){st.textContent=t.why||T.invalid;st.classList.add("warn")}else st.textContent=t.manual?"":T.firstAt+fmt(t.t0,2)}
+   const pic=document.createElement("div");pic.innerHTML=live&&busy.phase==="rec"?'<div class="bar"><i></i></div>':slotSvg(t);
+   const acts=document.createElement("div");acts.className="acts";
+   const btn=(txt,fn,cls,dis)=>{const b=document.createElement("button");b.type="button";b.textContent=txt;if(cls)b.className=cls;b.disabled=!!dis;b.addEventListener("click",fn);acts.append(b);return b};
+   btn(t?T.redo:T.rec,()=>record(s,i),"main",!!busy);
+   if(t&&!t.manual){btn(T.play,()=>play(s,i),"",!AUD[slotKey(s,i)]||!!busy);btn("−1",()=>adjust(s,i,-1),"",!!busy);btn("+1",()=>adjust(s,i,1),"",!!busy)}
+   if(t)btn(T.del,()=>clearSlot(s,i),"",!!busy);
+   const man=document.createElement("div");man.className="man";const inp=document.createElement("input");inp.type="number";inp.min=0;inp.max=60;inp.id=`man-${s}-${i}`;inp.setAttribute("aria-label",T.manualTxt+` /${s}/ ${i+1}`);inp.placeholder="n";
+   const ok=document.createElement("button");ok.type="button";ok.className="btn ghost sm";ok.textContent=T.manualBtn;ok.disabled=!!busy;ok.addEventListener("click",()=>{const n=parseInt(inp.value,10);if(!isNaN(n))manual(s,i,n)});
+   const ml=document.createElement("span");ml.textContent=T.manualShort;man.append(ml,inp,ok);
+   d.append(hd,rate,st,pic,acts,man);g.append(d)})});
+ const r=sc();$("#odksum").innerHTML=SYL.map(s=>{const o=r.odk[s];const n=S.odk[s].filter(t=>t&&t.valid).length;return`<div><small>/${s}/ · ${n}/3${T.trialsOf}</small><b class="num">${o?fmt(o.mean,2):"–"}</b>${o?(o.mean<6?`<span class="pill pos">&lt; 6${LANG==="vi"?",":"."}0</span>`:`<span class="pill neg">≥ 6${LANG==="vi"?",":"."}0</span>`):`<span class="pill na">${T.notYet}</span>`}</div>`}).join("");}
 
 /* ---------- results ---------- */
 function yn(v){return v===1?T.yesW:v===0?T.noW:"–"}
@@ -628,10 +692,10 @@ function bindReset(){const w=$("#reset-wrap");w.innerHTML="";const b=document.cr
   y.onclick=()=>{S=blank();save();initAll();bindReset();$("#draft-note").textContent=T.draftNew};n.onclick=bindReset}}
 $("#btn-sample").addEventListener("click",()=>{S=blank();S.info={id:"DEMO-001",date:new Date().toISOString().slice(0,10),age:"78",sex:T.sampleSex,setting:T.sampleSetting,exam:T.sampleExam};
  S.eat=[0,1,1,2,1,0,1,1,1,0];S.b2=1;S.b3=0;S.food=[2,2,2,2,2,2,2,2,1,2,2,2,1,1,0,0,0,1,0,"x"];S.xi=[2,3,1,3,2];S.d1=1;S.d2=0;
- const mk=arr=>arr.map(n=>{const taps=[];const t0=350;for(let k=0;k<n;k++)taps.push(Math.round(t0+k*5000/n));for(let k=0;k<Math.round(n/5);k++)taps.push(Math.round(t0+5000+k*5000/n));return Object.assign({taps,manual:false},analyse(taps))});
+ const mk=arr=>arr.map(n=>{const on=[];for(let k=0;k<n;k++)on.push(+(0.35+k*5/n).toFixed(2));for(let k=0;k<Math.round(n/5);k++)on.push(+(5.35+k*5/n).toFixed(2));const env=Array.from({length:120},(_,k)=>+(0.55+0.4*Math.abs(Math.sin(k*Math.PI*n/100))).toFixed(2));return{valid:true,count:n,rate:n/5,t0:0.35,onsets:on,env,adj:0}});
  S.odk={pa:mk([31,30,32]),ta:mk([28,27,29]),ka:mk([26,27,25])};S.tci=[2,1,1,1,1,0,0,0,0];save();initAll();$("#draft-note").textContent=T.draftSample;});
 
-function initAll(){fillInfo();buildQ();legend();buildTCI();renderTrials();upd()}
+function initAll(){fillInfo();buildQ();legend();buildTCI();renderODK();upd()}
 bindReset();initAll();go("info");
 })();
 </script>
