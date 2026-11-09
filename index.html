@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+<title>OHF-SQ Pilot Form</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a clinical case-report form — sticky step bar, one column of modules, result sheet at the end */
+:root{
+  --bg:#f4f6f5; --surface:#ffffff; --ink:#17201f; --muted:#5b6866; --line:#d8dfdd;
+  --accent:#0d6e6a; --accent-weak:#e1efee; --pos:#b4432c; --pos-weak:#f8e6e1; --ok:#2f7a45; --ok-weak:#e3f1e7; --warn:#9a6a00; --warn-weak:#f7efd9;
+  --sans:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111716; --surface:#19211f; --ink:#e4ecea; --muted:#9aa9a6; --line:#2d3936;
+  --accent:#4fb8b1; --accent-weak:#163634; --pos:#ef8a72; --pos-weak:#3a201a; --ok:#7cc994; --ok-weak:#17301f; --warn:#e2b54f; --warn-weak:#33290f; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111716; --surface:#19211f; --ink:#e4ecea; --muted:#9aa9a6; --line:#2d3936;
+  --accent:#4fb8b1; --accent-weak:#163634; --pos:#ef8a72; --pos-weak:#3a201a; --ok:#7cc994; --ok-weak:#17301f; --warn:#e2b54f; --warn-weak:#33290f; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{max-width:900px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+header.top .in{max-width:900px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:10px;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between}
+.brand{font-weight:700}
+.brand small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+nav.steps{display:flex;gap:4px;flex-wrap:wrap}
+nav.steps button{font:inherit;font-size:13px;border:1px solid var(--line);background:transparent;color:var(--ink);padding:6px 10px;border-radius:999px;cursor:pointer}
+nav.steps button[aria-current="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+nav.steps .n{font-family:var(--mono);opacity:.7;margin-right:4px}
+h1{font-size:24px;line-height:1.25;margin:28px 0 6px;text-wrap:balance}
+h2{font-size:18px;margin:0;text-wrap:balance}
+.lead{color:var(--muted);margin:0 0 18px;max-width:65ch}
+.note{font-size:13px;color:var(--muted)}
+.banner{background:var(--warn-weak);border:1px solid var(--line);border-left:4px solid var(--warn);padding:10px 12px;border-radius:6px;font-size:13px;margin:12px 0}
+section.mod{background:var(--surface);border:1px solid var(--line);border-radius:10px;margin:16px 0;overflow:hidden}
+.mod-h{display:flex;gap:12px;align-items:baseline;justify-content:space-between;flex-wrap:wrap;padding:14px 16px;border-bottom:1px solid var(--line)}
+.mod-h .tag{font-family:var(--mono);font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.06em}
+.mod-h .src{font-size:12px;color:var(--muted)}
+.mod-b{padding:4px 16px 14px}
+.q{display:grid;grid-template-columns:2.4em 1fr;gap:4px 8px;padding:12px 0;border-bottom:1px dashed var(--line)}
+.q:last-child{border-bottom:0}
+.q .no{font-family:var(--mono);color:var(--muted);font-size:13px;padding-top:2px}
+.q .txt{min-width:0}
+.opts{grid-column:2;display:flex;flex-wrap:wrap;gap:6px}
+.opts label{position:relative;cursor:pointer}
+.opts input{position:absolute;opacity:0;pointer-events:none}
+.opts span{display:inline-block;border:1px solid var(--line);border-radius:6px;padding:5px 10px;font-size:13px;background:var(--bg)}
+.opts input:checked+span{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.opts input:focus-visible+span{outline:2px solid var(--accent);outline-offset:2px}
+.score{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;padding:10px 16px;background:var(--bg);border-top:1px solid var(--line);font-size:14px}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:2px 10px;border-radius:999px;border:1px solid transparent}
+.pill.pos{background:var(--pos-weak);color:var(--pos);border-color:var(--pos)}
+.pill.neg{background:var(--ok-weak);color:var(--ok);border-color:var(--ok)}
+.pill.na{background:transparent;color:var(--muted);border-color:var(--line)}
+.pill.tmp{background:var(--warn-weak);color:var(--warn);border-color:var(--warn)}
+/* food cards */
+.lvhead{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin:16px 0 8px;display:flex;align-items:center;gap:8px}
+.lvhead .bar{display:inline-flex;gap:2px}.lvhead .bar i{width:10px;height:6px;border-radius:2px;background:var(--line)}.lvhead .bar i.on{background:var(--accent)}
+.foodgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:640px){.foodgrid{grid-template-columns:minmax(0,1fr)}}
+.food{display:grid;grid-template-columns:120px 1fr;gap:10px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:8px;background:var(--surface)}
+.food.done{border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
+.food .pic{width:120px;height:90px;border-radius:8px;background:#f7f4ee;display:flex;align-items:center;justify-content:center}
+.food .pic svg{width:120px;height:90px;display:block}
+.food .nm{font-weight:600;font-size:15px;line-height:1.3}
+.food .nm small{font-family:var(--mono);font-weight:400;color:var(--muted);margin-right:4px}
+.food .opts{grid-column:1/-1;flex-wrap:wrap}
+.food .opts span{padding:4px 8px;font-size:12.5px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.field{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
+.field input,.field select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;min-width:0;width:100%}
+.field input:focus-visible,.field select:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+button.btn{font:inherit;font-size:14px;font-weight:600;border-radius:8px;padding:9px 14px;cursor:pointer;border:1px solid var(--accent);background:var(--accent);color:var(--surface)}
+button.btn.ghost{background:transparent;color:var(--accent)}
+button.btn.sm{padding:3px 9px;font-size:12px}
+button.btn:disabled{opacity:.45;cursor:not-allowed}
+button.btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+/* ODK */
+.syl{display:flex;gap:6px;margin:12px 0}
+.syl button{font:inherit;font-family:var(--mono);font-size:16px;font-weight:600;padding:8px 18px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.syl button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-weak);color:var(--accent)}
+.pad{user-select:none;-webkit-user-select:none;touch-action:manipulation;width:100%;min-height:170px;border-radius:14px;border:2px dashed var(--line);background:var(--bg);color:var(--muted);font:inherit;font-size:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer}
+.pad.live{border-style:solid;border-color:var(--accent);background:var(--accent-weak);color:var(--ink)}
+.pad .big{font-family:var(--mono);font-size:44px;font-weight:600;line-height:1;color:var(--ink)}
+.prog{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-top:8px}
+.prog i{display:block;height:100%;width:0;background:var(--accent)}
+.trials{display:grid;gap:8px;margin-top:12px}
+.trial{display:grid;grid-template-columns:4.5em 1fr auto;gap:10px;align-items:center;font-size:13px}
+.trial svg{width:100%;height:26px;display:block}
+.trial .val{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right;min-width:7.5em}
+.trial .val.bad{color:var(--warn)}
+.manual{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:6px}
+.manual input{width:5em;font:inherit;font-family:var(--mono);background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:4px 6px}
+.odksum{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.odksum div{border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--bg)}
+.odksum b{display:block;font-family:var(--mono);font-size:20px}
+.odksum small{color:var(--muted)}
+/* TCI */
+.tongue{display:grid;grid-template-columns:minmax(0,280px) 1fr;gap:20px;align-items:start}
+.tongue .stage{background:radial-gradient(ellipse at 50% 40%,#3a1f22 0%,#1d1112 75%);border-radius:14px;padding:10px}
+.tongue svg.tg{width:100%;height:auto;display:block}
+.tongue .cell{cursor:pointer}
+.tongue .cell:focus{outline:none}
+.tongue .cell:focus-visible .ring{stroke:#fff;stroke-width:3}
+.legend{font-size:13px;display:grid;gap:10px;min-width:0}
+.sw{display:grid;grid-template-columns:72px 1fr;gap:10px;align-items:center}
+.sw svg{width:72px;height:48px;border-radius:8px;display:block}
+.tcibar{display:flex;gap:4px;flex-wrap:wrap}
+@media (max-width:620px){.tongue{grid-template-columns:1fr}.tongue .stage{max-width:300px}}
+/* Results */
+table.res{width:100%;border-collapse:collapse;font-size:14px}
+table.res th,table.res td{padding:9px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+table.res th{font-size:12px;color:var(--muted);font-weight:500}
+table.res td.code{font-family:var(--mono);color:var(--muted);white-space:nowrap}
+.tblwrap{overflow-x:auto}
+.verdict{display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding:16px;border-radius:10px;border:1px solid var(--line);background:var(--surface);margin:16px 0}
+.verdict .count{font-family:var(--mono);font-size:40px;font-weight:600;line-height:1}
+.verdict .count small{font-size:16px;color:var(--muted)}
+.verdict>div:last-child{min-width:0;flex:1}
+textarea#csvout{width:100%;min-height:90px;font-family:var(--mono);font-size:12px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:8px}
+.confirm{display:inline-flex;gap:6px;align-items:center;font-size:13px}
+.toast{font-size:13px;color:var(--ok)}
+@media (max-width:520px){.trial{grid-template-columns:3.6em 1fr}.trial .val{grid-column:1/-1;text-align:left}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+
+</head>
+<body>
+<header class="top"><div class="in">
+  <div class="brand"><span data-t="brand"></span><small data-t="brandSub"></small></div>
+  <a href="vi.html" style="font-size:13px;color:var(--accent)">Tiếng Việt</a>
+  <nav class="steps" data-ta="navLabel">
+    <button type="button" data-step="info"><span class="n">1</span><span data-t="s1"></span></button>
+    <button type="button" data-step="q"><span class="n">2</span><span data-t="s2"></span></button>
+    <button type="button" data-step="t"><span class="n">3</span><span data-t="s3"></span></button>
+    <button type="button" data-step="r"><span class="n">4</span><span data-t="s4"></span></button>
+  </nav>
+</div></header>
+
+<main class="wrap">
+<div id="step-info" class="step">
+  <h1 data-t="infoH"></h1>
+  <p class="lead" data-t="infoLead"></p>
+  <div class="banner" data-t="banner"></div>
+  <section class="mod"><div class="mod-b" style="padding-top:14px">
+    <div class="grid2">
+      <label class="field"><span data-t="fId"></span><input id="f-id" type="text" autocomplete="off"></label>
+      <label class="field"><span data-t="fDate"></span><input id="f-date" type="date"></label>
+      <label class="field"><span data-t="fAge"></span><input id="f-age" type="number" min="40" max="110" inputmode="numeric"></label>
+      <label class="field"><span data-t="fSex"></span><select id="f-sex"></select></label>
+      <label class="field"><span data-t="fSetting"></span><select id="f-setting"></select></label>
+      <label class="field"><span data-t="fExam"></span><input id="f-exam" type="text" autocomplete="off"></label>
+    </div>
+  </div></section>
+  <div class="row">
+    <button type="button" class="btn" data-go="q" data-t="startQ"></button>
+    <button type="button" class="btn ghost" id="btn-sample" data-t="sample"></button>
+    <span class="confirm" id="reset-wrap"></span>
+  </div>
+  <p class="note" id="draft-note"></p>
+</div>
+
+<div id="step-q" class="step" hidden>
+  <h1 data-t="qH"></h1>
+  <p class="lead" data-t="qLead"></p>
+  <section class="mod">
+    <div class="mod-h"><div><span class="tag" data-t="aTag"></span><h2 data-t="aH"></h2></div><span class="src" data-t="aSrc"></span></div>
+    <div class="mod-b" id="eat"></div>
+    <div class="score"><span data-t="eatTot"></span> <b class="num" id="eat-total">–</b>/40 <span id="eat-pill"></span><span class="note" data-t="eatRule"></span></div>
+  </section>
+  <section class="mod">
+    <div class="mod-h"><div><span class="tag" data-t="bTag"></span><h2 data-t="bH"></h2></div><span class="src" data-t="bSrc"></span></div>
+    <div class="mod-b" id="chew"></div>
+  </section>
+  <section class="mod">
+    <div class="mod-h"><div><span class="tag" data-t="fTag"></span><h2 data-t="fH"></h2></div><span class="src" data-t="fSrc"></span></div>
+    <div class="mod-b"><div id="foods"></div><p class="note" data-t="fNote"></p></div>
+    <div class="score"><span data-t="csTot"></span> <b class="num" id="cs-total">–</b>/100 <span id="cs-pill"></span><span class="note" data-t="csRule"></span></div>
+  </section>
+  <section class="mod">
+    <div class="mod-h"><div><span class="tag" data-t="cTag"></span><h2 data-t="cH"></h2></div><span class="src" data-t="cSrc"></span></div>
+    <div class="mod-b" id="xi"></div>
+    <div class="score"><span data-t="xiTot"></span> <b class="num" id="xi-total">–</b>/25 <span id="xi-pill"></span><span class="note" data-t="xiRule"></span></div>
+  </section>
+  <section class="mod">
+    <div class="mod-h"><div><span class="tag" data-t="dTag"></span><h2 data-t="dH"></h2></div><span class="src" data-t="dSrc"></span></div>
+    <div class="mod-b" id="tongueq"></div>
+    <div class="score note" data-t="dRule"></div>
+  </section>
+  <div class="row"><button type="button" class="btn" data-go="t" data-t="toTests"></button><span class="note" id="q-missing"></span></div>
+</div>
+
+<div id="step-t" class="step" hidden>
+  <h1 data-t="tH"></h1>
+  <p class="lead" data-t="tLead"></p>
+  <section class="mod">
+    <div class="mod-h"><div><span class="tag" data-t="odkTag"></span><h2 data-t="odkH"></h2></div><span class="src" data-t="odkSrc"></span></div>
+    <div class="mod-b">
+      <p class="note" style="margin-top:10px" data-t="odkHow"></p>
+      <div class="syl" role="group" data-ta="sylLabel">
+        <button type="button" data-syl="pa" aria-pressed="true">/pa/</button>
+        <button type="button" data-syl="ta" aria-pressed="false">/ta/</button>
+        <button type="button" data-syl="ka" aria-pressed="false">/ka/</button>
+      </div>
+      <button type="button" class="pad" id="pad" aria-live="polite"><span class="big" id="pad-big">/pa/</span><span id="pad-msg"></span></button>
+      <div class="prog" aria-hidden="true"><i id="prog"></i></div>
+      <div class="row" style="margin-top:10px"><button type="button" class="btn" id="odk-start" data-t="odkStart"></button><span class="note" id="odk-hint"></span></div>
+      <div class="trials" id="trials"></div>
+      <div class="odksum" id="odksum"></div>
+    </div>
+  </section>
+  <section class="mod">
+    <div class="mod-h"><div><span class="tag" data-t="tciTag"></span><h2 data-t="tciH"></h2></div><span class="src" data-t="tciSrc"></span></div>
+    <div class="mod-b" style="padding-top:14px">
+      <div class="tongue">
+        <div class="stage"><svg class="tg" id="tci-svg" viewBox="0 0 260 320" role="group"></svg></div>
+        <div class="legend" id="tci-legend"></div>
+      </div>
+    </div>
+    <div class="score"><span>TCI:</span> <b class="num" id="tci-pct">–</b> % <span id="tci-pill"></span><span class="note" data-t="tciRule"></span></div>
+  </section>
+  <div class="row"><button type="button" class="btn" data-go="r" data-t="toResults"></button></div>
+</div>
+
+<div id="step-r" class="step" hidden>
+  <h1 data-t="rH"></h1>
+  <p class="lead" id="r-who"></p>
+  <div class="verdict" id="verdict"></div>
+  <section class="mod"><div class="tblwrap"><table class="res" id="restbl"></table></div></section>
+  <p class="note" data-t="rNote"></p>
+  <section class="mod"><div class="mod-h"><h2 data-t="expH"></h2><span class="src" data-t="expSub"></span></div>
+    <div class="mod-b" style="padding-top:12px">
+      <div class="row"><button type="button" class="btn" id="btn-dl" hidden data-t="dl"></button><button type="button" class="btn ghost" id="btn-copy" data-t="copy"></button><span class="toast" id="toast"></span></div>
+      <p class="note" data-t="expNote"></p>
+      <textarea id="csvout" readonly></textarea>
+    </div>
+  </section>
+</div>
+</main>
+
+<script>
+/* Food illustrations: hand-drawn SVG, semi-realistic (gradients, highlights, shadows). viewBox 0 0 120 90 */
+const ART=(function(){
+const sh='<ellipse cx="60" cy="81" rx="46" ry="6" fill="#000" opacity=".13"/>';
+const lg=(id,a,b,x2,y2)=>`<linearGradient id="${id}" x1="0" y1="0" x2="${x2??0}" y2="${y2??1}"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient>`;
+const rg=(id,a,b,cx,cy)=>`<radialGradient id="${id}" cx="${cx??.4}" cy="${cy??.35}" r=".75"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></radialGradient>`;
+const plate=(p)=>`${sh}<ellipse cx="60" cy="62" rx="52" ry="18" fill="url(#${p}pl)" stroke="#c9cfd4"/><ellipse cx="60" cy="61" rx="40" ry="12.5" fill="#fbfcfd" stroke="#e1e5e8"/>`;
+const plateDef=(p)=>lg(p+"pl","#ffffff","#d8dde1");
+const bowl=(p,rim)=>`${sh}<path d="M12 40 Q14 78 60 80 Q106 78 108 40 Z" fill="url(#${p}bw)"/><path d="M15 52 Q60 70 105 52" stroke="${rim||"#2f6aa6"}" stroke-width="2.2" fill="none"/><path d="M17 58 Q60 74 103 58" stroke="${rim||"#2f6aa6"}" stroke-width=".8" fill="none" opacity=".7"/><ellipse cx="60" cy="40" rx="48" ry="13" fill="#fff" stroke="#cfd6dc"/>`;
+const bowlDef=(p)=>lg(p+"bw","#fbfcfd","#b4bfc9");
+function rnd(seed){let s=seed;return()=>{s=(s*9301+49297)%233280;return s/233280}}
+const A={};
+A.chao=p=>`<defs>${bowlDef(p)}${rg(p+"a","#fffdf5","#e6dbc3",.45,.4)}</defs>${bowl(p)}<ellipse cx="60" cy="41" rx="43" ry="11" fill="url(#${p}a)"/>`+
+ (()=>{const r=rnd(3);let s="";for(let i=0;i<26;i++){const x=24+r()*72,y=35+r()*12;s+=`<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="2.2" ry="1.1" fill="#fff" stroke="#e2d6bd" stroke-width=".4" transform="rotate(${(r()*180).toFixed(0)} ${x.toFixed(1)} ${y.toFixed(1)})"/>`}
+ for(let i=0;i<7;i++){const x=40+r()*40,y=36+r()*9;s+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="1.8" fill="none" stroke="#4f9a35" stroke-width="1.1"/>`}
+ for(let i=0;i<9;i++){const x=44+r()*30,y=37+r()*7;s+=`<path d="M${x.toFixed(1)} ${y.toFixed(1)} l2 -.8 l.6 1.4 z" fill="#b8742c"/>`}return s})()+`<ellipse cx="44" cy="36" rx="10" ry="2.2" fill="#fff" opacity=".6"/>`;
+A.dauhu=p=>`<defs>${plateDef(p)}${lg(p+"f","#fffaf0","#eadfc8")}${lg(p+"s","#e6dac0","#cbbd9e")}</defs>${plate(p)}
+<path d="M30 46 L66 40 L92 48 L56 55 Z" fill="#fffdf6"/><path d="M30 46 L56 55 L56 72 L30 63 Z" fill="url(#${p}f)"/><path d="M56 55 L92 48 L92 64 L56 72 Z" fill="url(#${p}s)"/>
+<path d="M36 47 Q50 44 62 47 Q72 50 84 48" stroke="#7a4a1c" stroke-width="2.2" fill="none" opacity=".8" stroke-linecap="round"/><path d="M58 55 Q60 62 58 68" stroke="#7a4a1c" stroke-width="1.6" fill="none" opacity=".6"/>
+<circle cx="48" cy="45" r="1.6" fill="none" stroke="#4f9a35" stroke-width="1"/><circle cx="70" cy="46" r="1.6" fill="none" stroke="#4f9a35" stroke-width="1"/><ellipse cx="44" cy="58" rx="6" ry="1.5" fill="#fff" opacity=".7" transform="rotate(20 44 58)"/>`;
+A.chuoi=p=>`<defs>${lg(p+"y","#fbe35a","#dcaa18")}${lg(p+"y2","#f6d84a","#c99812")}</defs>${sh}
+<path d="M14 46 Q34 82 94 66 Q104 62 108 52 L103 50 Q92 62 62 63 Q34 62 20 42 Z" fill="url(#${p}y2)"/>
+<path d="M12 36 Q30 70 92 56 Q103 52 107 42 L102 40 Q92 52 60 53 Q32 52 18 32 Z" fill="url(#${p}y)"/>
+<path d="M20 38 Q36 56 62 56 Q88 55 100 44" stroke="#fff6b8" stroke-width="2" fill="none" opacity=".8"/>
+<path d="M102 40 L111 33 L113 36 L106 43 Z" fill="#6b5a2a"/><path d="M103 50 L112 45 L113 48 L107 53 Z" fill="#6b5a2a"/>
+<circle cx="13" cy="35" r="2.4" fill="#3d2d16"/><circle cx="15" cy="45" r="2.2" fill="#3d2d16"/>`+
+ (()=>{const r=rnd(7);let s="";for(let i=0;i<14;i++)s+=`<circle cx="${(30+r()*65).toFixed(1)}" cy="${(48+r()*12).toFixed(1)}" r="${(.6+r()*.9).toFixed(1)}" fill="#8a5a1c" opacity=".75"/>`;return s})();
+A.flan=p=>`<defs>${lg(p+"c","#f8dc84","#e2a943",1,0)}${rg(p+"k","#a2521a","#5c2608",.5,.3)}</defs>${sh}<ellipse cx="60" cy="72" rx="44" ry="10" fill="#f3f5f6" stroke="#cdd3d8"/><ellipse cx="60" cy="71" rx="30" ry="6" fill="#9a4a16" opacity=".85"/>
+<path d="M34 38 L86 38 L92 68 Q60 76 28 68 Z" fill="url(#${p}c)"/><ellipse cx="60" cy="38" rx="26" ry="7" fill="url(#${p}k)"/>
+<path d="M36 40 Q38 48 37 54 Q39 56 40 52 Q41 46 42 42 Z M56 44 Q58 52 57 58 Q60 60 60 54 L60 44 Z M76 42 Q78 49 77 53 Q80 55 80 50 L81 41 Z" fill="#7a3510"/>
+<path d="M40 44 Q42 58 38 66" stroke="#fff3c4" stroke-width="2.4" fill="none" opacity=".7"/><ellipse cx="52" cy="36" rx="9" ry="2" fill="#e9a36a" opacity=".6"/>`;
+A.com=p=>`<defs>${bowlDef(p)}${rg(p+"r","#ffffff","#e9e7dc",.45,.3)}${lg(p+"ch","#9b6a3c","#5e3a1c",1,0)}</defs>${bowl(p,"#3a7f5a")}<path d="M16 41 Q60 0 104 41 Q60 52 16 41 Z" fill="url(#${p}r)"/>`+
+ (()=>{const r=rnd(11);let s="";for(let i=0;i<70;i++){const t=r()*Math.PI,x=60+Math.cos(t)*(r()*42),y=40-Math.sin(t)*(r()*26);s+=`<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="2.1" ry="1" fill="#fff" stroke="#d9d6c8" stroke-width=".35" transform="rotate(${(r()*180).toFixed(0)} ${x.toFixed(1)} ${y.toFixed(1)})"/>`}return s})()+
+ `<rect x="70" y="4" width="3" height="56" rx="1.5" fill="url(#${p}ch)" transform="rotate(38 71 32)"/><rect x="76" y="6" width="3" height="56" rx="1.5" fill="url(#${p}ch)" transform="rotate(44 77 34)"/>`;
+A.pho=p=>`<defs>${bowlDef(p)}${rg(p+"b","#e8bb6d","#b57a2f",.5,.4)}</defs>${bowl(p,"#b23b2b")}<ellipse cx="60" cy="41" rx="44" ry="11.5" fill="url(#${p}b)"/>
+<path d="M22 42 Q30 37 38 42 T54 42 T70 42 T86 42 T98 41" stroke="#fffaf0" stroke-width="2" fill="none"/><path d="M26 45 Q34 40 42 45 T58 45 T74 45 T92 44" stroke="#f7efe0" stroke-width="1.8" fill="none"/><path d="M30 38 Q38 34 46 38 T62 38 T78 38 T92 38" stroke="#fffaf0" stroke-width="1.6" fill="none"/>
+<path d="M44 34 Q56 30 64 36 Q58 42 46 40 Z" fill="#a8695b"/><path d="M60 37 Q72 33 80 39 Q72 45 62 42 Z" fill="#9b5d50"/><path d="M48 36 Q55 34 60 37" stroke="#d9a79a" stroke-width=".8" fill="none"/>
+<ellipse cx="34" cy="38" rx="6" ry="2.6" fill="#3d8b37" transform="rotate(-25 34 38)"/><ellipse cx="40" cy="36" rx="5" ry="2.2" fill="#2f7a2c" transform="rotate(30 40 36)"/><ellipse cx="84" cy="44" rx="6" ry="2.4" fill="#3f8f3a" transform="rotate(15 84 44)"/>
+<circle cx="70" cy="45" r="3" fill="none" stroke="#f3f0e6" stroke-width="1.2"/><circle cx="52" cy="46" r="2.6" fill="none" stroke="#f3f0e6" stroke-width="1.1"/><path d="M90 34 L100 30 L98 38 Z" fill="#9cc94a" stroke="#6c9a2a" stroke-width=".8"/>`;
+A.cakho=p=>`<defs>${lg(p+"pot","#8a4a2a","#4a2312")}${rg(p+"s","#9a4b16","#4e1f06",.5,.4)}${lg(p+"f","#c97a3a","#7b3a12")}</defs>${sh}
+<path d="M14 42 Q16 80 60 80 Q104 80 106 42 Z" fill="url(#${p}pot)"/><path d="M18 56 Q60 68 102 56" stroke="#a96a46" stroke-width="1.2" fill="none" opacity=".7"/><ellipse cx="60" cy="42" rx="47" ry="12" fill="#5a2b16"/><ellipse cx="60" cy="42" rx="42" ry="10" fill="url(#${p}s)"/>
+<rect x="28" y="33" width="30" height="16" rx="7" fill="url(#${p}f)" stroke="#3e1a06" stroke-width="1.4" transform="rotate(-8 43 41)"/><rect x="60" y="34" width="30" height="15" rx="7" fill="url(#${p}f)" stroke="#3e1a06" stroke-width="1.4" transform="rotate(10 75 41)"/>
+<circle cx="43" cy="41" r="2.4" fill="#e9c08e"/><circle cx="75" cy="41" r="2.4" fill="#e9c08e"/><path d="M34 37 Q44 35 52 37" stroke="#f0b077" stroke-width="1.2" fill="none"/>
+<path d="M52 46 Q57 44 60 48" stroke="#d9261c" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M84 46 Q88 43 92 46" stroke="#d9261c" stroke-width="2.2" fill="none" stroke-linecap="round"/>`+
+ (()=>{const r=rnd(5);let s="";for(let i=0;i<12;i++)s+=`<circle cx="${(26+r()*68).toFixed(1)}" cy="${(36+r()*12).toFixed(1)}" r=".9" fill="#1b0e06"/>`;return s})();
+A.trung=p=>`<defs>${rg(p+"e","#fffaf2","#e2d4bd",.35,.3)}${rg(p+"y","#ffd451","#e09b10",.45,.4)}</defs>${sh}
+<ellipse cx="40" cy="48" rx="20" ry="26" fill="url(#${p}e)" stroke="#d6c7ad" stroke-width=".8"/><ellipse cx="33" cy="36" rx="5" ry="8" fill="#fff" opacity=".7"/>
+<ellipse cx="82" cy="60" rx="24" ry="16" fill="#fdfcf8" stroke="#e1dccf"/><ellipse cx="82" cy="60" rx="11" ry="8" fill="url(#${p}y)"/><ellipse cx="78" cy="57" rx="3.5" ry="2" fill="#ffe89a" opacity=".8"/>`;
+A.banhmi=p=>`<defs>${lg(p+"b","#f0b25a","#a85c17")}</defs>${sh}
+<path d="M8 58 Q12 34 60 30 Q108 28 112 50 Q112 66 62 70 Q10 74 8 58 Z" fill="url(#${p}b)"/>
+<path d="M22 48 Q30 40 40 42" stroke="#f9dc9b" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M42 44 Q50 36 60 38" stroke="#f9dc9b" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M62 42 Q70 34 80 36" stroke="#f9dc9b" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M82 42 Q90 36 100 40" stroke="#f9dc9b" stroke-width="4" fill="none" stroke-linecap="round"/>
+<path d="M14 60 Q60 72 108 56" stroke="#7d420d" stroke-width="1.6" fill="none" opacity=".5"/><ellipse cx="40" cy="36" rx="16" ry="2.4" fill="#fff4d6" opacity=".55"/>`;
+A.thitluoc=p=>`<defs>${plateDef(p)}${lg(p+"m","#efc3b4","#c9897a")}</defs>${plate(p)}`+
+ [0,1,2,3].map(i=>{const x=26+i*16,y=44+i*2;return `<g transform="rotate(-14 ${x+14} ${y+10})"><rect x="${x}" y="${y}" width="30" height="20" rx="3" fill="url(#${p}m)" stroke="#b07767" stroke-width=".6"/><rect x="${x}" y="${y}" width="30" height="6" rx="2" fill="#fbf2e3"/><rect x="${x}" y="${y}" width="30" height="2" rx="1" fill="#e5c08c"/><path d="M${x+4} ${y+12} q8 3 20 0" stroke="#e8b7a8" stroke-width="1" fill="none"/></g>`}).join("")+
+ `<ellipse cx="94" cy="52" rx="7" ry="4" fill="#5b3a2a" opacity=".85"/><circle cx="93" cy="51" r="1.2" fill="#e04a2a"/>`;
+A.raumuong=p=>`<defs>${plateDef(p)}</defs>${plate(p)}`+
+ (()=>{const r=rnd(19);let s="";for(let i=0;i<16;i++){const x=30+r()*50,y=54+r()*12,a=-30+r()*60,l=14+r()*12;s+=`<path d="M${x.toFixed(1)} ${y.toFixed(1)} l${(l*Math.cos(a*Math.PI/180)).toFixed(1)} ${(l*Math.sin(a*Math.PI/180)*.4).toFixed(1)}" stroke="${i%3?"#78b04e":"#5f9a3a"}" stroke-width="2.6" stroke-linecap="round"/>`}
+ for(let i=0;i<12;i++){const x=24+r()*70,y=48+r()*18;s+=`<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="${(6+r()*4).toFixed(1)}" ry="2.6" fill="${i%2?"#2f6e2a":"#3d7f30"}" transform="rotate(${(-40+r()*80).toFixed(0)} ${x.toFixed(1)} ${y.toFixed(1)})"/>`}
+ for(let i=0;i<10;i++)s+=`<rect x="${(30+r()*56).toFixed(1)}" y="${(50+r()*14).toFixed(1)}" width="2.2" height="1.8" rx=".6" fill="#f1dca0"/>`;
+ for(let i=0;i<5;i++)s+=`<ellipse cx="${(34+r()*50).toFixed(1)}" cy="${(52+r()*10).toFixed(1)}" rx="3" ry=".8" fill="#fff" opacity=".55"/>`;return s})();
+A.dualeo=p=>`<defs>${lg(p+"c","#4f9a3a","#244f1a")}${rg(p+"s","#eaf6cf","#b7d98a",.5,.5)}</defs>${sh}
+<path d="M10 44 Q12 30 40 30 L86 32 Q100 34 100 44 Q100 54 86 56 L40 58 Q12 58 10 44 Z" fill="url(#${p}c)"/>
+<path d="M18 38 Q50 34 92 38" stroke="#8cc46a" stroke-width="2" fill="none" opacity=".7"/><path d="M18 48 Q50 50 92 48" stroke="#1f4416" stroke-width="1.2" fill="none" opacity=".5"/>`+
+ (()=>{const r=rnd(23);let s="";for(let i=0;i<16;i++)s+=`<circle cx="${(18+r()*74).toFixed(1)}" cy="${(34+r()*20).toFixed(1)}" r=".9" fill="#d3eab4" opacity=".8"/>`;return s})()+
+ [[82,66],[100,70],[64,72]].map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="11" ry="8" fill="#2f6b22"/><ellipse cx="${x}" cy="${y}" rx="9.5" ry="6.8" fill="url(#${p}s)"/><ellipse cx="${x}" cy="${y}" rx="4.5" ry="3" fill="none" stroke="#c9e3a4" stroke-dasharray="1.4 1.2"/>`).join("");
+A.thitbo=p=>`<defs>${plateDef(p)}${lg(p+"b","#9a4a2a","#5a2210")}</defs>${plate(p)}`+
+ (()=>{const r=rnd(29);let s="";for(let i=0;i<11;i++){const x=26+r()*52,y=50+r()*14,a=(-40+r()*80).toFixed(0);s+=`<path d="M${x.toFixed(1)} ${y.toFixed(1)} q12 -8 26 0 q-12 9 -26 0 z" fill="url(#${p}b)" stroke="#3d1608" stroke-width=".5" transform="rotate(${a} ${(x+9).toFixed(1)} ${y.toFixed(1)})"/><path d="M${(x+3).toFixed(1)} ${(y-1).toFixed(1)} q5 -2 10 0" stroke="#d9946a" stroke-width=".9" fill="none" transform="rotate(${a} ${(x+9).toFixed(1)} ${y.toFixed(1)})"/>`}
+ for(let i=0;i<5;i++){const x=30+r()*56,y=50+r()*12;s+=`<path d="M${x.toFixed(1)} ${y.toFixed(1)} q6 -6 12 0" stroke="#f3ead6" stroke-width="2.2" fill="none" opacity=".9"/>`}
+ for(let i=0;i<6;i++)s+=`<rect x="${(30+r()*56).toFixed(1)}" y="${(50+r()*12).toFixed(1)}" width="6" height="1.6" rx=".8" fill="#4e9a37"/>`;return s})();
+A.bap=p=>`<defs>${lg(p+"k","#ffd85a","#e0a414")}${lg(p+"h","#a9cf72","#5e8f30")}</defs>${sh}
+<path d="M84 34 Q108 20 112 30 Q104 36 96 46 Z" fill="url(#${p}h)"/><path d="M86 52 Q110 62 108 70 Q98 66 92 58 Z" fill="url(#${p}h)"/>
+<path d="M10 44 Q12 30 34 30 L88 34 Q96 40 96 44 Q96 50 88 54 L34 58 Q12 58 10 44 Z" fill="#d79a12"/>`+
+ (()=>{let s="";for(let c=0;c<13;c++)for(let rr=0;rr<5;rr++){const x=16+c*5.8,y=33.5+rr*4.6+(c%2)*1.2;if(c>11&&(rr===0||rr===4))continue;s+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="5" height="4" rx="1.6" fill="url(#${p}k)" stroke="#c98d0c" stroke-width=".4"/>`}return s})()+
+ `<path d="M16 37 Q50 33 86 37" stroke="#fff3b8" stroke-width="1.6" fill="none" opacity=".7"/>`;
+A.oi=p=>`<defs>${rg(p+"g","#c4e58a","#5d8f2c",.38,.32)}${rg(p+"w","#fbfaf0","#e8e3c8",.5,.5)}</defs>${sh}
+<circle cx="42" cy="46" r="27" fill="url(#${p}g)"/><path d="M42 19 l-2 -6 l4 0 z" fill="#5a3b1e"/><ellipse cx="33" cy="35" rx="7" ry="5" fill="#eaf8c8" opacity=".5"/>`+
+ (()=>{const r=rnd(31);let s="";for(let i=0;i<10;i++)s+=`<circle cx="${(26+r()*32).toFixed(1)}" cy="${(32+r()*30).toFixed(1)}" r=".9" fill="#4a6e22" opacity=".6"/>`;return s})()+
+ `<ellipse cx="86" cy="58" rx="22" ry="17" fill="#79a83c"/><ellipse cx="86" cy="57" rx="19.5" ry="14.5" fill="url(#${p}w)"/>`+
+ (()=>{const r=rnd(37);let s="";for(let i=0;i<22;i++){const a=r()*6.28,d=4+r()*7;s+=`<circle cx="${(86+Math.cos(a)*d*1.3).toFixed(1)}" cy="${(57+Math.sin(a)*d).toFixed(1)}" r="1.1" fill="#d9c27a"/>`}return s})();
+A.tao=p=>`<defs>${rg(p+"a","#f05a48","#8c1212",.35,.3)}${lg(p+"l","#6fb03e","#2e6a1c",1,1)}</defs>${sh}
+<path d="M60 26 Q80 14 94 30 Q106 46 94 66 Q84 82 68 76 Q60 73 52 76 Q36 82 26 66 Q14 46 26 30 Q40 14 60 26 Z" fill="url(#${p}a)"/>
+<path d="M60 26 Q58 16 62 8" stroke="#5b3a1e" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M62 14 Q76 4 86 12 Q76 22 62 14 Z" fill="url(#${p}l)"/><path d="M64 14 Q74 11 84 12" stroke="#a7d27c" stroke-width=".8" fill="none"/>
+<ellipse cx="38" cy="38" rx="7" ry="11" fill="#ffd2c8" opacity=".45" transform="rotate(20 38 38)"/><path d="M72 32 Q86 44 84 62" stroke="#ffb3a3" stroke-width="1.2" fill="none" opacity=".35"/>`;
+A.carot=p=>`<defs>${lg(p+"c","#ffa53a","#d2580a")}${lg(p+"l","#79c14a","#2f7a24")}</defs>${sh}
+<path d="M22 40 Q24 28 36 30 L106 48 Q112 51 106 54 L36 62 Q22 60 22 40 Z" fill="url(#${p}c)"/>
+<path d="M40 36 l4 3 M54 40 l5 3 M70 44 l4 3 M86 48 l3 2 M44 56 l4 -2 M62 55 l4 -2 M80 53 l4 -1" stroke="#b9500c" stroke-width="1.1" stroke-linecap="round"/><path d="M32 36 Q62 40 98 48" stroke="#ffd29a" stroke-width="1.6" fill="none" opacity=".7"/>
+<path d="M24 42 Q8 26 4 14 Q14 22 24 36 Z M24 44 Q6 40 2 30 Q14 32 26 40 Z M26 38 Q18 18 22 6 Q28 20 28 34 Z" fill="url(#${p}l)"/>`;
+A.dauphong=p=>`<defs>${lg(p+"d","#f5f2ec","#bfc4c8")}${rg(p+"n","#f1cf95","#c48a45",.4,.35)}</defs>${sh}<path d="M18 46 Q22 76 60 76 Q98 76 102 46 Z" fill="url(#${p}d)"/><ellipse cx="60" cy="46" rx="42" ry="11" fill="#e9ecef" stroke="#c7ccd1"/>`+
+ (()=>{const r=rnd(41);let s="";for(let i=0;i<34;i++){const x=24+r()*72,y=44-r()*16+Math.abs(x-60)*.22,a=(r()*180).toFixed(0);s+=`<g transform="rotate(${a} ${x.toFixed(1)} ${y.toFixed(1)})"><ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="4.6" ry="3.2" fill="url(#${p}n)" stroke="#a8692c" stroke-width=".4"/>${r()<.45?`<path d="M${(x-3).toFixed(1)} ${(y-1).toFixed(1)} q2 -2 4 0 q-1 2 -4 0z" fill="#9b4a2a" opacity=".85"/>`:""}<path d="M${x.toFixed(1)} ${(y-3).toFixed(1)} v6" stroke="#c99a5a" stroke-width=".5"/></g>`}return s})();
+A.khomuc=p=>`<defs>${plateDef(p)}${lg(p+"s","#f2c27a","#b46a24")}</defs>${plate(p)}`+
+ (()=>{const r=rnd(43);let s="";for(let i=0;i<22;i++){const x=24+r()*64,y=46+r()*20,l=14+r()*18,a=(-35+r()*70).toFixed(0);s+=`<path d="M${x.toFixed(1)} ${y.toFixed(1)} q${(l/2).toFixed(1)} ${(-3+r()*6).toFixed(1)} ${l.toFixed(1)} 0" stroke="url(#${p}s)" stroke-width="${(2+r()*2).toFixed(1)}" fill="none" stroke-linecap="round" transform="rotate(${a} ${x.toFixed(1)} ${y.toFixed(1)})"/>`}
+ for(let i=0;i<14;i++)s+=`<circle cx="${(30+r()*58).toFixed(1)}" cy="${(48+r()*16).toFixed(1)}" r="${(.8+r()*1.3).toFixed(1)}" fill="#5a2a0c" opacity=".75"/>`;
+ return s})()+`<ellipse cx="92" cy="66" rx="6" ry="3" fill="#e9a33a" opacity=".9"/><circle cx="91" cy="65" r="1" fill="#d23a1c"/>`;
+A.mia=p=>`<defs>${lg(p+"r","#7b4560","#3f1a2c",1,0)}${lg(p+"in","#f6ecb8","#d9c579",1,0)}</defs>${sh}`+
+ [[14,22],[38,18],[62,22]].map(([x,y],i)=>`<g transform="rotate(${-8+i*6} ${x+8} ${y+28})"><rect x="${x}" y="${y}" width="16" height="56" rx="3" fill="url(#${p}r)"/><rect x="${x}" y="${y+18}" width="16" height="3.4" fill="#2d0f1d"/><rect x="${x}" y="${y+40}" width="16" height="3" fill="#2d0f1d"/><rect x="${x+3}" y="${y+2}" width="3" height="52" rx="1.5" fill="#c79ab0" opacity=".45"/><ellipse cx="${x+8}" cy="${y}" rx="8" ry="3" fill="#efe3a8" stroke="#3f1a2c" stroke-width="1"/></g>`).join("")+
+ `<g transform="rotate(14 98 50)"><rect x="90" y="18" width="14" height="60" rx="3" fill="url(#${p}in)"/>`+[0,1,2,3].map(k=>`<path d="M${93+k*3} 20 v56" stroke="#c9b468" stroke-width=".7" opacity=".8"/>`).join("")+`</g>`;
+return A;})();
+
+</script>
+<script>
+(function(){
+"use strict";
+const LANG="en";
+const T={
+vi:{brand:"OHF-SQ · phiếu thử nghiệm",brandSub:"Bảng hỏi tự báo cáo + 2 test ngắn · chức năng miệng theo JSG",navLabel:"Các bước",s1:"Thông tin",s2:"Bảng hỏi",s3:"Test",s4:"Kết quả",
+ infoH:"Thông tin người tham gia",infoLead:"Phiếu gồm 39 câu hỏi (khoảng 10–12 phút) và 2 test ngắn (khoảng 5 phút): chỉ số phủ lưỡi và ODK /pa/ /ta/ /ka/. Áp lực lưỡi không đo trong phiên bản này. Kết quả được tính tự động theo ngưỡng JSG.",
+ banner:"Bản thử nghiệm cho Giai đoạn 2. Câu EAT-10 và Xerostomia Inventory là bản dịch tạm, cần thay bằng bản tiếng Việt được cấp phép trước khi thu số liệu thật. Danh sách 20 món ăn là bản Việt hóa đề xuất, chưa kiểm định. Hình món ăn là hình vẽ minh họa.",
+ fId:"Mã người tham gia",fDate:"Ngày khám",fAge:"Tuổi",fSex:"Giới",fSetting:"Nơi khám",fExam:"Người khám",sexOpts:["—","Nam","Nữ"],setOpts:["—","Cộng đồng","Phòng khám","Viện dưỡng lão","Bệnh viện"],
+ startQ:"Bắt đầu bảng hỏi",sample:"Điền dữ liệu mẫu",reset:"Phiếu mới",resetQ:"Xóa phiếu hiện tại?",del:"Xóa",keep:"Giữ",draftBack:"Đã mở lại phiếu đang làm dở trên trình duyệt này.",draftNew:"Đã tạo phiếu mới.",draftSample:"Đã điền dữ liệu mẫu (không phải người thật).",
+ qH:"Bảng hỏi",qLead:"Đọc to từng câu nếu người tham gia khó đọc, nhưng để họ tự chọn câu trả lời. Không dùng người chăm sóc trả lời thay.",
+ aTag:"Mô-đun A · H7 Nuốt",aH:"Ông/bà gặp vấn đề sau ở mức nào?",aSrc:"EAT-10 (Belafsky 2008) · bản dịch tạm",eatTot:"Tổng EAT-10:",eatRule:"Bất thường khi ≥ 3",
+ bTag:"Mô-đun B · H6 Nhai",bH:"Ăn nhai trong thời gian gần đây",bSrc:"Kihon Checklist câu 13 · Oku 2025",
+ b2:"So với 6 tháng trước, ông/bà có thấy ăn đồ cứng khó hơn không?",b3:"Hiện nay ông/bà có phải chỉ ăn đồ mềm không?",yes:"Có",no:"Không",
+ fTag:"Mô-đun B · H6 Nhai và H3 Lực cắn",fH:"Với răng hiện tại (kể cả hàm giả), ông/bà ăn được các món này thế nào?",fSrc:"Theo Chewing Score 20 (Uchida 2022) · bản Việt hóa",
+ fNote:"Chọn \"Không ăn vì lý do khác\" nếu không ăn vì sở thích, tôn giáo hay bệnh lý; món đó bị loại khỏi mẫu số. Cà rốt sống và táo nguyên quả cũng dùng cho câu nhai B1 (Demers 1996).",
+ foodOpts:["Ăn dễ","Khó","Không ăn được","Không ăn vì lý do khác"],lv:["","Mức 1 · rất mềm","Mức 2 · mềm","Mức 3 · trung bình","Mức 4 · hơi cứng","Mức 5 · cứng"],
+ csTot:"Điểm ăn nhai 20 món:",csRule:"Lực cắn bất thường khi < 85 (ngưỡng gốc, cần hiệu chỉnh cho bản Việt)",
+ cTag:"Mô-đun C · H2 Khô miệng",cH:"Trong 4 tuần qua, ông/bà gặp điều này thường đến mức nào?",cSrc:"Xerostomia Inventory, 5 câu (Thomson 1999; Bicheru 2026) · bản dịch tạm",xiTot:"Tổng XI-5:",xiRule:"Chưa có ngưỡng chuẩn; tạm coi ≥ 15 là nghi khô miệng",
+ dTag:"Mô-đun D · gợi ý lưỡi",dH:"Hai câu tham khảo cho chức năng lưỡi",dSrc:"OF-5 / Kihon Checklist câu 14 · Oku 2025",
+ d1:"Ông/bà có hay bị sặc khi uống trà hay canh không?",d2:"Ông/bà có hay làm rơi thức ăn ra khỏi miệng khi ăn không?",dRule:"Không dùng để kết luận; D1 so sánh với ODK, D2 ghi nhận thay cho áp lực lưỡi chưa đo.",
+ toTests:"Sang phần test",missing:"Còn thiếu: ",allDone:"Đã trả lời đủ.",foodsLeft:" món ăn",
+ tH:"Test ngắn",tLead:"Hai chức năng người cao tuổi không tự nhận ra được, nên đo trực tiếp. Áp lực lưỡi (H5) không đo trong phiên bản này.",
+ odkTag:"H4 · Vận động lưỡi–môi",odkH:"Oral diadochokinesis /pa/ /ta/ /ka/",odkSrc:"JSG: < 6,0 lần/giây ở bất kỳ âm nào",
+ odkHow:"Cách làm: bấm \"Bắt đầu\", đếm ngược 3 giây rồi người tham gia nói âm đó nhanh và liên tục trong 6 giây. Người khám chạm vào ô lớn (hoặc phím Space) mỗi lần nghe một âm. Kết quả lấy 5 giây kể từ âm đầu tiên, chia cho 5 ra số lần/giây. Mỗi âm làm 3 lần, lấy trung bình.",
+ sylLabel:"Chọn âm",odkStart:"Bắt đầu lần tiếp theo",padIdle:"Bấm \"Bắt đầu lần tiếp theo\" bên dưới",ready:"Chuẩn bị…",tapEach:"Chạm mỗi lần nghe ",enough:"Đã đủ 3 lần cho ",enough2:". Xóa một lần để làm lại.",doneSyl:"Xong ",nextSyl:". Chuyển sang ",
+ trial:"Lần",manualNote:"Nhập tay",perS:"/s",syllables:"âm",in5:" âm trong 5 giây = ",perSec:" lần/giây",noTap:"Không ghi nhận lần chạm nào",late:"Âm đầu trễ hơn 1 giây, cửa sổ 5 giây bị thiếu — làm lại",invalid:"Không hợp lệ",
+ manualTxt:"Hoặc nhập tay số âm đếm được trong 5 giây (từ bản ghi âm):",addTrial:"Thêm lần",trialsOf:" lần",notYet:"chưa đo",
+ tciTag:"H1 · Vệ sinh miệng",tciH:"Chỉ số phủ lưỡi (TCI), 9 vùng",tciSrc:"Shimizu 2007 · JSG: TCI ≥ 50%",tciRule:"Bất thường khi ≥ 50%",
+ tciAria:"Mặt lưng lưỡi chia 9 vùng; chạm để đổi điểm 0, 1, 2",tciHow:"Nhìn mặt lưng lưỡi dưới đèn, người tham gia thè lưỡi tối đa. Chạm từng vùng để chuyển điểm 0 → 1 → 2.",
+ tci0:"0 — không thấy phủ lưỡi",tci1:"1 — phủ mỏng, vẫn thấy nhú lưỡi",tci2:"2 — phủ dày, không thấy nhú lưỡi",tciBack:"cuống lưỡi",tciTip:"đầu lưỡi",tciRows:["Cuống","Giữa","Đầu"],tciCols:["trái","giữa","phải"],tciUn:"chưa chấm",tciScored:"Đã chấm",
+ toResults:"Xem kết quả",rH:"Kết quả",noId:"Chưa có mã",yrs:" tuổi",
+ thFn:"Chức năng",thBy:"Đo bằng",thRes:"Kết quả",thCut:"Ngưỡng",thCls:"Phân loại",thAcc:"Độ chính xác dự kiến",
+ fn:{H1:"Vệ sinh miệng",H2:"Khô miệng",H3:"Lực cắn",H4:"Vận động lưỡi–môi",H5:"Áp lực lưỡi",H6:"Nhai",H7:"Nuốt"},
+ by:{H1:"Test TCI",H2:"XI-5 (câu hỏi)",H3:"20 món ăn (câu hỏi)",H4:"Test ODK",H5:"Không đo",H6:"B1–B3 (câu hỏi)",H7:"EAT-10 (câu hỏi)"},
+ acc:{H7:"Se 0,83 / Sp 0,70 (5 NC, chứng cứ thấp)",H6:"Se ~0,67 / Sp ~0,76 (ước lượng)",H3:"Se 0,74 / Sp 0,73 (1 NC)",H2:"Chưa có ngưỡng; AUC 0,87 ở người nội trú",H4:"Test chuẩn JSG",H5:"—",H1:"Test chuẩn JSG"},
+ cut:{H1:"≥ 50%",H2:"≥ 15 (tạm)",H3:"< 85",H4:"< 6,0/giây",H5:"< 30 kPa",H6:"≥ 1 câu có",H7:"≥ 3"},
+ pPos:"Bất thường",pTmp:"Nghi (ngưỡng tạm)",pNeg:"Bình thường",pNa:"Chưa đủ dữ liệu",pNo:"Không đo",
+ h5Res:"Không đo (không có máy)",b1:"B1",b2s:"B2",b3s:"B3",yesW:"có",noW:"không",
+ vPos:"Dương tính sàng lọc",vNeg:"Âm tính sàng lọc",vNa:"Thiếu dữ liệu",vBorder:"Cần đo thêm",
+ vPosTxt:"Nghi suy giảm chức năng miệng (≥ 3/7 chức năng bất thường). Nên làm đủ 7 test JSG để xác nhận.",
+ vBorderTxt:"2 chức năng bất thường. Nếu áp lực lưỡi (chưa đo) cũng thấp thì đạt tiêu chí ≥ 3/7; nên đo áp lực lưỡi.",
+ vNegTxt:"Không đạt tiêu chí suy giảm chức năng miệng (< 3/7), kể cả khi áp lực lưỡi bất thường.",
+ vNaTxt1:"Chưa kết luận: còn ",vNaTxt2:" chức năng chưa có dữ liệu.",measured:" đo",
+ hint:"Câu gợi ý: sặc khi uống (D1) = ",hint2:"; rơi thức ăn (D2) = ",
+ rNote:"Quy tắc JSG: suy giảm chức năng miệng khi ≥ 3/7 chức năng dưới ngưỡng. Phiếu này đo 6/7 chức năng (không đo áp lực lưỡi); H2, H3, H6 và H7 được đo bằng câu hỏi nên kết luận chỉ mang tính sàng lọc. Độ chính xác dự kiến lấy từ tổng quan hệ thống (7/11/2026).",
+ expH:"Xuất dữ liệu",expSub:"Một dòng CSV cho mỗi người tham gia",dl:"Tải file CSV",copy:"Sao chép dòng CSV",copied:"Đã sao chép",selected:"Đã chọn sẵn, nhấn Ctrl/Cmd+C",saved:"Đã lưu file",cancel:"Đã hủy",noSave:"Không lưu được ở đây; dùng Sao chép",
+ expNote:"Dòng tiêu đề và dòng dữ liệu bên dưới; dán vào Excel để gộp nhiều người.",csvLabel:"Dữ liệu CSV",sampleExam:"Ví dụ",sampleSetting:"Viện dưỡng lão",sampleSex:"Nữ",file:"phieu",
+ eatOpt:["0 Không có","1","2","3","4 Rất nặng"],xiOpt:["1 Không bao giờ","2 Hiếm khi","3 Thỉnh thoảng","4 Thường xuyên","5 Rất thường xuyên"],
+ eat:["Vấn đề nuốt làm tôi bị sụt cân.","Vấn đề nuốt ảnh hưởng đến việc tôi đi ăn ở ngoài.","Tôi phải gắng sức khi nuốt chất lỏng (nước, canh).","Tôi phải gắng sức khi nuốt thức ăn đặc.","Tôi phải gắng sức khi nuốt viên thuốc.","Nuốt làm tôi bị đau.","Vấn đề nuốt làm giảm niềm vui ăn uống của tôi.","Khi nuốt, thức ăn bị mắc lại trong cổ họng.","Tôi bị ho khi ăn.","Việc nuốt làm tôi căng thẳng."],
+ xi:["Tôi phải uống nước mới nuốt trôi được thức ăn.","Môi tôi bị khô.","Tôi phải ngậm kẹo vì khô miệng.","Miệng tôi cảm thấy khô.","Miệng tôi bị khô khi ăn."]},
+en:{brand:"OHF-SQ · pilot form",brandSub:"Self-report questionnaire + 2 brief tests · JSG oral functions",navLabel:"Steps",s1:"Participant",s2:"Questionnaire",s3:"Tests",s4:"Results",
+ infoH:"Participant details",infoLead:"The form has 39 questions (about 10–12 minutes) and 2 brief tests (about 5 minutes): the tongue coating index and ODK /pa/ /ta/ /ka/. Tongue pressure is not measured in this version. Results are scored automatically against JSG cut-offs.",
+ banner:"Pilot version for Stage 2. EAT-10 and Xerostomia Inventory items are working translations; replace them with the licensed wording before collecting real data. The 20-food list is a proposed Vietnamese adaptation and has not been validated. Food pictures are illustrations.",
+ fId:"Participant ID",fDate:"Examination date",fAge:"Age",fSex:"Sex",fSetting:"Setting",fExam:"Examiner",sexOpts:["—","Male","Female"],setOpts:["—","Community","Clinic","Nursing home","Hospital"],
+ startQ:"Start questionnaire",sample:"Fill sample data",reset:"New form",resetQ:"Clear the current form?",del:"Clear",keep:"Keep",draftBack:"Reopened the unfinished form saved in this browser.",draftNew:"Started a new form.",draftSample:"Sample data filled in (not a real person).",
+ qH:"Questionnaire",qLead:"Read each item aloud if the participant has difficulty reading, but let them choose the answer. Do not accept answers from a caregiver.",
+ aTag:"Module A · H7 Swallowing",aH:"How much of a problem is each of the following for you?",aSrc:"EAT-10 (Belafsky 2008) · working wording",eatTot:"EAT-10 total:",eatRule:"Abnormal if ≥ 3",
+ bTag:"Module B · H6 Mastication",bH:"Eating and chewing recently",bSrc:"Kihon Checklist item 13 · Oku 2025",
+ b2:"Compared with 6 months ago, do you find it harder to eat hard foods?",b3:"Do you now eat only soft foods?",yes:"Yes",no:"No",
+ fTag:"Module B · H6 Mastication and H3 Occlusal force",fH:"With your present teeth (including dentures), how well can you eat these foods?",fSrc:"After Chewing Score 20 (Uchida 2022) · Vietnamese adaptation",
+ fNote:"Choose \"Don't eat for other reasons\" when the food is avoided for taste, religion or illness; it is then left out of the denominator. Raw carrot and whole apple also feed chewing item B1 (Demers 1996).",
+ foodOpts:["Easily","With difficulty","Cannot eat","Don't eat for other reasons"],lv:["","Level 1 · very soft","Level 2 · soft","Level 3 · medium","Level 4 · firm","Level 5 · hard"],
+ csTot:"20-food chewing score:",csRule:"Occlusal force abnormal if < 85 (original cut-off; recalibrate for this list)",
+ cTag:"Module C · H2 Oral dryness",cH:"Over the past 4 weeks, how often has this applied to you?",cSrc:"Xerostomia Inventory, 5-item form (Thomson 1999; Bicheru 2026) · working wording",xiTot:"XI-5 total:",xiRule:"No validated cut-off; provisionally ≥ 15 = suspected dryness",
+ dTag:"Module D · tongue prompts",dH:"Two reference questions for tongue function",dSrc:"OF-5 / Kihon Checklist item 14 · Oku 2025",
+ d1:"Do you often choke when drinking tea or soup?",d2:"Do you often spill food from your mouth while eating?",dRule:"Not used for classification; D1 is compared with ODK, D2 is recorded in place of the unmeasured tongue pressure.",
+ toTests:"Go to tests",missing:"Still missing: ",allDone:"All questions answered.",foodsLeft:" foods",
+ tH:"Brief tests",tLead:"Older adults cannot perceive these functions themselves, so they are measured directly. Tongue pressure (H5) is not measured in this version.",
+ odkTag:"H4 · Tongue–lip motor function",odkH:"Oral diadochokinesis /pa/ /ta/ /ka/",odkSrc:"JSG: < 6.0 per second for any syllable",
+ odkHow:"Press \"Start\". After a 3-second countdown the participant repeats the syllable as fast as possible for 6 seconds. The examiner taps the large pad (or presses Space) for every syllable heard. The score uses the 5 seconds from the first syllable, divided by 5. Each syllable is done 3 times and averaged.",
+ sylLabel:"Choose syllable",odkStart:"Start next trial",padIdle:"Press \"Start next trial\" below",ready:"Get ready…",tapEach:"Tap for every ",enough:"Three trials done for ",enough2:". Delete one to redo it.",doneSyl:"Finished ",nextSyl:". Move on to ",
+ trial:"Trial",manualNote:"Entered manually",perS:"/s",syllables:"syll.",in5:" syllables in 5 s = ",perSec:" per second",noTap:"No taps recorded",late:"First syllable came after 1 s, so the 5-second window is incomplete — repeat",invalid:"Invalid",
+ manualTxt:"Or enter the number of syllables counted in 5 seconds (from a recording):",addTrial:"Add trial",trialsOf:" trials",notYet:"not measured",
+ tciTag:"H1 · Oral hygiene",tciH:"Tongue Coating Index (TCI), 9 areas",tciSrc:"Shimizu 2007 · JSG: TCI ≥ 50%",tciRule:"Abnormal if ≥ 50%",
+ tciAria:"Tongue dorsum in 9 areas; tap to change the score 0, 1, 2",tciHow:"Inspect the tongue dorsum under a light with the tongue fully protruded. Tap each area to cycle 0 → 1 → 2.",
+ tci0:"0 — no visible coating",tci1:"1 — thin coating, papillae visible",tci2:"2 — thick coating, papillae not visible",tciBack:"back of tongue",tciTip:"tip",tciRows:["Back","Middle","Front"],tciCols:["left","centre","right"],tciUn:"not scored",tciScored:"Scored",
+ toResults:"See results",rH:"Results",noId:"No ID yet",yrs:" y",
+ thFn:"Function",thBy:"Measured by",thRes:"Result",thCut:"Cut-off",thCls:"Classification",thAcc:"Expected accuracy",
+ fn:{H1:"Oral hygiene",H2:"Oral dryness",H3:"Occlusal force",H4:"Tongue–lip motor function",H5:"Tongue pressure",H6:"Mastication",H7:"Swallowing"},
+ by:{H1:"TCI test",H2:"XI-5 (questions)",H3:"20-food list (questions)",H4:"ODK test",H5:"Not measured",H6:"B1–B3 (questions)",H7:"EAT-10 (questions)"},
+ acc:{H7:"Se 0.83 / Sp 0.70 (5 studies, low certainty)",H6:"Se ~0.67 / Sp ~0.76 (estimate)",H3:"Se 0.74 / Sp 0.73 (1 study)",H2:"No cut-off; AUC 0.87 in residential care",H4:"JSG reference test",H5:"—",H1:"JSG reference test"},
+ cut:{H1:"≥ 50%",H2:"≥ 15 (provisional)",H3:"< 85",H4:"< 6.0/s",H5:"< 30 kPa",H6:"≥ 1 yes",H7:"≥ 3"},
+ pPos:"Abnormal",pTmp:"Suspected (provisional)",pNeg:"Normal",pNa:"Incomplete",pNo:"Not measured",
+ h5Res:"Not measured (no device)",b1:"B1",b2s:"B2",b3s:"B3",yesW:"yes",noW:"no",
+ vPos:"Screen positive",vNeg:"Screen negative",vNa:"Incomplete",vBorder:"Measure more",
+ vPosTxt:"Suspected oral hypofunction (≥ 3 of 7 functions abnormal). Confirm with the full JSG battery.",
+ vBorderTxt:"2 functions abnormal. If the unmeasured tongue pressure is also low, the ≥ 3/7 criterion is met; consider measuring tongue pressure.",
+ vNegTxt:"Does not meet the oral hypofunction criterion (< 3/7), even if tongue pressure were abnormal.",
+ vNaTxt1:"No conclusion yet: ",vNaTxt2:" function(s) still missing data.",measured:" measured",
+ hint:"Prompt items: choking when drinking (D1) = ",hint2:"; spilling food (D2) = ",
+ rNote:"JSG rule: oral hypofunction when ≥ 3 of 7 functions fall below cut-off. This form measures 6 of 7 functions (no tongue pressure); H2, H3, H6 and H7 are measured by questions, so the result is a screen only. Expected accuracy comes from the systematic review (7 Nov 2026).",
+ expH:"Export",expSub:"One CSV row per participant",dl:"Download CSV",copy:"Copy CSV row",copied:"Copied",selected:"Selected; press Ctrl/Cmd+C",saved:"File saved",cancel:"Cancelled",noSave:"Saving is unavailable here; use Copy",
+ expNote:"Header row and data row below; paste into Excel to combine participants.",csvLabel:"CSV data",sampleExam:"Example",sampleSetting:"Nursing home",sampleSex:"Female",file:"form",
+ eatOpt:["0 No problem","1","2","3","4 Severe problem"],xiOpt:["1 Never","2 Hardly ever","3 Occasionally","4 Fairly often","5 Very often"],
+ eat:["I have lost weight because of trouble swallowing.","Trouble swallowing affects my ability to eat out.","Swallowing liquids takes extra effort.","Swallowing solid food takes extra effort.","Swallowing pills takes extra effort.","Swallowing is painful.","Trouble swallowing reduces my pleasure in eating.","Food sticks in my throat when I swallow.","I cough when I eat.","Swallowing makes me feel stressed."],
+ xi:["I have to drink water to get food down.","My lips feel dry.","I suck sweets or mints because my mouth is dry.","My mouth feels dry.","My mouth feels dry when I eat."]}
+}[LANG];
+const $=s=>document.querySelector(s);
+document.documentElement.lang=LANG;
+document.querySelectorAll("[data-t]").forEach(el=>{el.textContent=T[el.dataset.t]});
+document.querySelectorAll("[data-ta]").forEach(el=>el.setAttribute("aria-label",T[el.dataset.ta]));
+$("#csvout").setAttribute("aria-label",T.csvLabel);$("#tci-svg").setAttribute("aria-label",T.tciAria);
+$("#f-sex").innerHTML="";T.sexOpts.forEach((o,i)=>{const op=document.createElement("option");op.value=i?o:"";op.textContent=o;$("#f-sex").append(op)});
+$("#f-setting").innerHTML="";T.setOpts.forEach((o,i)=>{const op=document.createElement("option");op.value=i?o:"";op.textContent=o;$("#f-setting").append(op)});
+$("#f-id").placeholder=LANG==="vi"?"VD: HCM-001":"e.g. HCM-001";$("#pad-msg").textContent=T.padIdle;
+
+const FOODS=[[1,"Cháo trắng","Rice porridge","chao"],[1,"Đậu hũ non","Silken tofu","dauhu"],[1,"Chuối chín","Ripe banana","chuoi"],[1,"Bánh flan","Crème caramel (flan)","flan"],
+ [2,"Cơm trắng","Steamed rice","com"],[2,"Phở hoặc bún","Phở or rice noodles","pho"],[2,"Cá kho","Braised fish","cakho"],[2,"Trứng luộc","Boiled egg","trung"],
+ [3,"Bánh mì ổ (cả vỏ)","Bánh mì baguette, with crust","banhmi"],[3,"Thịt heo luộc","Boiled pork slices","thitluoc"],[3,"Rau muống xào","Stir-fried water spinach","raumuong"],[3,"Dưa leo","Cucumber","dualeo"],
+ [4,"Thịt bò xào","Stir-fried beef","thitbo"],[4,"Bắp luộc (gặm trên trái)","Corn on the cob","bap"],[4,"Ổi sống","Raw guava","oi"],[4,"Táo nguyên quả (cắn từ quả)","Whole apple, bitten","tao"],
+ [5,"Cà rốt sống","Raw carrot","carot"],[5,"Đậu phộng rang","Roasted peanuts","dauphong"],[5,"Khô mực nướng","Grilled dried squid","khomuc"],[5,"Mía (cắn, nhai)","Sugarcane, chewed","mia"]];
+const IDX_APPLE=15,IDX_CARROT=16,SYL=["pa","ta","ka"];
+
+const blank=()=>({info:{id:"",date:new Date().toISOString().slice(0,10),age:"",sex:"",setting:"",exam:""},
+ eat:Array(10).fill(null),b2:null,b3:null,food:Array(20).fill(null),xi:Array(5).fill(null),d1:null,d2:null,odk:{pa:[],ta:[],ka:[]},tci:Array(9).fill(null)});
+let S=blank();const KEY="ohf-sq-draft-v2-"+LANG;
+try{const raw=localStorage.getItem(KEY);if(raw){S=Object.assign(blank(),JSON.parse(raw));$("#draft-note").textContent=T.draftBack}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+
+function go(step){document.querySelectorAll(".step").forEach(el=>el.hidden=el.id!=="step-"+step);
+ document.querySelectorAll("nav.steps button").forEach(b=>b.setAttribute("aria-current",b.dataset.step===step?"true":"false"));
+ if(step==="r")renderResults();if(step==="q")missing();window.scrollTo({top:0});}
+document.querySelectorAll("[data-step]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.step)));
+document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.go)));
+
+const INFO=[["f-id","id"],["f-date","date"],["f-age","age"],["f-sex","sex"],["f-setting","setting"],["f-exam","exam"]];
+function fillInfo(){INFO.forEach(([el,k])=>{$("#"+el).value=S.info[k]||""})}
+INFO.forEach(([el,k])=>$("#"+el).addEventListener("input",e=>{S.info[k]=e.target.value;save()}));
+
+function radios(name,opts,cur,onPick){const w=document.createElement("div");w.className="opts";
+ opts.forEach(([v,l])=>{const lab=document.createElement("label");const i=document.createElement("input");i.type="radio";i.name=name;i.id=name+"-"+v;i.value=v;
+  if(cur!==null&&String(cur)===String(v))i.checked=true;i.addEventListener("change",()=>onPick(v));const sp=document.createElement("span");sp.textContent=l;lab.append(i,sp);w.append(lab)});return w;}
+function qRow(no,text,optsEl){const d=document.createElement("div");d.className="q";const n=document.createElement("div");n.className="no";n.textContent=no;const t=document.createElement("div");t.className="txt";t.textContent=text;d.append(n,t,optsEl);return d;}
+function buildQ(){
+ const eat=$("#eat");eat.innerHTML="";T.eat.forEach((t,i)=>eat.append(qRow("A"+(i+1),t,radios("eat"+i,T.eatOpt.map((l,v)=>[v,l]),S.eat[i],v=>{S.eat[i]=+v;save();upd()}))));
+ const ch=$("#chew");ch.innerHTML="";
+ ch.append(qRow("B2",T.b2,radios("b2",[[1,T.yes],[0,T.no]],S.b2,v=>{S.b2=+v;save();upd()})));
+ ch.append(qRow("B3",T.b3,radios("b3",[[1,T.yes],[0,T.no]],S.b3,v=>{S.b3=+v;save();upd()})));
+ const fd=$("#foods");fd.innerHTML="";let lv=0,grid=null;
+ FOODS.forEach(([l,vi,en,art],i)=>{if(l!==lv){lv=l;const h=document.createElement("div");h.className="lvhead";h.innerHTML='<span class="bar">'+[1,2,3,4,5].map(k=>`<i class="${k<=l?"on":""}"></i>`).join("")+"</span>";h.append(T.lv[l]);fd.append(h);grid=document.createElement("div");grid.className="foodgrid";fd.append(grid)}
+  const c=document.createElement("div");c.className="food"+(S.food[i]!==null?" done":"");
+  const pic=document.createElement("div");pic.className="pic";pic.innerHTML=`<svg viewBox="0 0 120 90" role="img" aria-label="${(LANG==="vi"?vi:en).replace(/"/g,"")}">${ART[art]("f"+i+"-")}</svg>`;
+  const nm=document.createElement("div");nm.className="nm";const sm=document.createElement("small");sm.textContent="F"+(i+1);nm.append(sm,LANG==="vi"?vi:en);
+  if(i===IDX_APPLE||i===IDX_CARROT){const b=document.createElement("span");b.className="note";b.textContent=" · B1";nm.append(b)}
+  c.append(pic,nm,radios("food"+i,[[2,T.foodOpts[0]],[1,T.foodOpts[1]],[0,T.foodOpts[2]],["x",T.foodOpts[3]]],S.food[i],v=>{S.food[i]=v==="x"?"x":+v;c.classList.add("done");save();upd()}));grid.append(c)});
+ const xi=$("#xi");xi.innerHTML="";T.xi.forEach((t,i)=>xi.append(qRow("C"+(i+1),t,radios("xi"+i,T.xiOpt.map((l,v)=>[v+1,l]),S.xi[i],v=>{S.xi[i]=+v;save();upd()}))));
+ const tq=$("#tongueq");tq.innerHTML="";
+ tq.append(qRow("D1",T.d1,radios("d1",[[1,T.yes],[0,T.no]],S.d1,v=>{S.d1=+v;save()})));
+ tq.append(qRow("D2",T.d2,radios("d2",[[1,T.yes],[0,T.no]],S.d2,v=>{S.d2=+v;save()})));}
+
+const sum=a=>a.reduce((s,x)=>s+(typeof x==="number"?x:0),0);
+const allAns=a=>a.every(x=>x!==null&&x!=="");
+const fmt=(x,d)=>LANG==="vi"?x.toFixed(d).replace(".",","):x.toFixed(d);
+function sc(){const r={};
+ r.eat=allAns(S.eat)?sum(S.eat):null;r.H7=r.eat===null?null:r.eat>=3;
+ const valid=S.food.filter(x=>x===0||x===1||x===2);const answered=S.food.every(x=>x!==null);
+ r.cs=answered&&valid.length>=10?Math.round(sum(valid)/(2*valid.length)*1000)/10:null;r.H3=r.cs===null?null:r.cs<85;
+ r.b1=(S.food[IDX_APPLE]===0||S.food[IDX_CARROT]===0)?1:((S.food[IDX_APPLE]===null||S.food[IDX_CARROT]===null)?null:0);
+ r.H6=(r.b1===1||S.b2===1||S.b3===1)?true:((r.b1===0&&S.b2===0&&S.b3===0)?false:null);
+ r.xi=allAns(S.xi)?sum(S.xi):null;r.H2=r.xi===null?null:r.xi>=15;
+ r.odk={};let any=false,allDone=true;SYL.forEach(s=>{const ok=S.odk[s].filter(t=>t.valid);if(ok.length){const m=ok.reduce((a,t)=>a+t.rate,0)/ok.length;r.odk[s]={mean:Math.round(m*100)/100,n:ok.length};if(m<6)any=true}else{r.odk[s]=null;allDone=false}});
+ r.H4=any?true:(allDone?false:null);
+ r.tci=allAns(S.tci)?Math.round(sum(S.tci)/18*1000)/10:null;r.H1=r.tci===null?null:r.tci>=50;
+ r.H5="nm";return r;}
+function pill(v,tmp){if(v==="nm")return`<span class="pill na">${T.pNo}</span>`;if(v===null)return`<span class="pill na">${T.pNa}</span>`;return v?`<span class="pill ${tmp?"tmp":"pos"}">${tmp?T.pTmp:T.pPos}</span>`:`<span class="pill neg">${T.pNeg}</span>`;}
+function upd(){const r=sc();
+ $("#eat-total").textContent=r.eat??"–";$("#eat-pill").innerHTML=pill(r.H7);
+ $("#cs-total").textContent=r.cs===null?"–":fmt(r.cs,1);$("#cs-pill").innerHTML=pill(r.H3);
+ $("#xi-total").textContent=r.xi??"–";$("#xi-pill").innerHTML=pill(r.H2,true);
+ $("#tci-pct").textContent=r.tci===null?"–":fmt(r.tci,1);$("#tci-pill").innerHTML=pill(r.H1);missing();}
+function missing(){const m=[];if(!allAns(S.eat))m.push("EAT-10");if(S.b2===null||S.b3===null)m.push("B2–B3");const fl=S.food.filter(x=>x===null).length;if(fl)m.push(fl+T.foodsLeft);if(!allAns(S.xi))m.push("XI-5");if(S.d1===null||S.d2===null)m.push("D1–D2");
+ $("#q-missing").textContent=m.length?T.missing+m.join(", "):T.allDone;}
+
+/* ---------- TCI: realistic tongue ---------- */
+const NS="http://www.w3.org/2000/svg";
+const TONGUE="M44 34 C52 14 100 8 130 8 C160 8 208 14 216 34 C226 70 228 140 214 200 C202 252 176 300 130 304 C84 300 58 252 46 200 C32 140 34 70 44 34 Z";
+const COAT=[null,{op:.55,col:"#f6f1e4"},{op:.92,col:"#efe3c2"}];
+function tongueDefs(id){return `<defs>
+<radialGradient id="${id}base" cx="50%" cy="45%" r="62%"><stop offset="0" stop-color="#ef8f95"/><stop offset=".65" stop-color="#d9636f"/><stop offset="1" stop-color="#a83a4b"/></radialGradient>
+<linearGradient id="${id}edge" x1="0" x2="1"><stop offset="0" stop-color="#8e2c3d" stop-opacity=".55"/><stop offset=".18" stop-color="#8e2c3d" stop-opacity="0"/><stop offset=".82" stop-color="#8e2c3d" stop-opacity="0"/><stop offset="1" stop-color="#8e2c3d" stop-opacity=".55"/></linearGradient>
+<pattern id="${id}pap" width="7" height="7" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.15" fill="#ffc2c6" opacity=".75"/><circle cx="5.5" cy="5.5" r=".9" fill="#ffd1d4" opacity=".6"/><circle cx="5.6" cy="1.8" r=".55" fill="#b8424f" opacity=".5"/></pattern>
+<filter id="${id}fur" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".09" numOctaves="3" seed="4" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.6 -.35" result="m"/><feComposite in="SourceGraphic" in2="m" operator="in"/><feGaussianBlur stdDeviation=".5"/></filter>
+<clipPath id="${id}clip"><path d="${TONGUE}"/></clipPath></defs>`;}
+function tongueBody(id){return `<path d="${TONGUE}" fill="url(#${id}base)"/><g clip-path="url(#${id}clip)"><rect x="0" y="0" width="260" height="320" fill="url(#${id}pap)"/><rect x="0" y="0" width="260" height="320" fill="url(#${id}edge)"/>
+<path d="M130 18 C128 80 132 150 129 236" stroke="#9c3445" stroke-width="3" fill="none" opacity=".55" stroke-linecap="round"/><path d="M130 18 C128 80 132 150 129 236" stroke="#f3a3aa" stroke-width="1" fill="none" opacity=".4" transform="translate(2 0)"/>
+<ellipse cx="96" cy="250" rx="22" ry="10" fill="#fff" opacity=".18"/></g>`;}
+function buildTCI(){const svg=$("#tci-svg");const id="tg-";
+ const X=[34,99,161,226],Y=[8,104,200,306];
+ let s=tongueDefs(id)+tongueBody(id)+`<g clip-path="url(#${id}clip)">`;
+ for(let i=0;i<9;i++){const r=Math.floor(i/3),c=i%3,v=S.tci[i];if(v>0){const k=COAT[v];s+=`<g filter="url(#${id}fur)"><rect x="${X[c]}" y="${Y[r]}" width="${X[c+1]-X[c]}" height="${Y[r+1]-Y[r]}" fill="${k.col}" opacity="${k.op}"/></g>`;if(v===2)s+=`<rect x="${X[c]}" y="${Y[r]}" width="${X[c+1]-X[c]}" height="${Y[r+1]-Y[r]}" fill="#e8d8a8" opacity=".25"/>`}}
+ s+=`</g><g clip-path="url(#${id}clip)" stroke="#fff" stroke-opacity=".75" stroke-width="1.4" stroke-dasharray="5 4" fill="none"><path d="M${X[1]} 0 V320 M${X[2]} 0 V320 M0 ${Y[1]} H260 M0 ${Y[2]} H260"/></g>`;
+ s+=`<path d="${TONGUE}" fill="none" stroke="#7d2333" stroke-width="2"/>`;
+ svg.innerHTML=s;
+ for(let i=0;i<9;i++){const r=Math.floor(i/3),c=i%3,v=S.tci[i];const cx=(X[c]+X[c+1])/2,cy=(Y[r]+Y[r+1])/2+(r===2?-14:0);
+  const g=document.createElementNS(NS,"g");g.setAttribute("class","cell");g.setAttribute("tabindex","0");g.setAttribute("role","button");
+  g.setAttribute("aria-label",`${T.tciRows[r]} ${T.tciCols[c]}: ${v===null?T.tciUn:v}`);
+  g.innerHTML=`<rect x="${X[c]}" y="${Y[r]}" width="${X[c+1]-X[c]}" height="${Y[r+1]-Y[r]}" fill="transparent"/><circle class="ring" cx="${cx}" cy="${cy}" r="15" fill="${v===null?"rgba(255,255,255,.18)":"#ffffff"}" stroke="${v===null?"#ffffff":v===0?"#2f7a45":v===1?"#b8860b":"#b4432c"}" stroke-width="2" ${v===null?'stroke-dasharray="3 3"':""}/><text x="${cx}" y="${cy+6}" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="17" font-weight="600" fill="${v===null?"#ffffff":"#17201f"}">${v===null?"?":v}</text>`;
+  const bump=()=>{S.tci[i]=S.tci[i]===null?0:(S.tci[i]+1)%3;save();buildTCI();upd();const el=svg.querySelectorAll(".cell")[i];el&&el.focus()};
+  g.addEventListener("click",bump);g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();bump()}});svg.append(g)}
+ const lbl=(y,txt)=>{const t=document.createElementNS(NS,"text");t.setAttribute("x",130);t.setAttribute("y",y);t.setAttribute("text-anchor","middle");t.setAttribute("font-size","11");t.setAttribute("fill","#f6dfe1");t.textContent=txt;svg.append(t)};
+ lbl(318,T.tciTip);const tb=document.createElementNS(NS,"text");tb.setAttribute("x",130);tb.setAttribute("y",6);tb.setAttribute("text-anchor","middle");tb.setAttribute("font-size","0");svg.append(tb);
+ const n=S.tci.filter(x=>x!==null).length;$("#tci-scored").textContent=`${T.tciScored}: ${n}/9`;}
+function legend(){const L=$("#tci-legend");const sw=(v)=>{const id="sw"+v+"-";const k=COAT[v];return `<svg viewBox="0 0 72 48" aria-hidden="true">${tongueDefs(id).replace(TONGUE,"M0 0 H72 V48 H0 Z")}<rect width="72" height="48" fill="url(#${id}base)"/><rect width="72" height="48" fill="url(#${id}pap)"/>${k?`<g filter="url(#${id}fur)"><rect width="72" height="48" fill="${k.col}" opacity="${k.op}"/></g>${v===2?'<rect width="72" height="48" fill="#e8d8a8" opacity=".25"/>':""}`:""}</svg>`};
+ L.innerHTML=`<div class="note"></div>`+[0,1,2].map(v=>`<div class="sw">${sw(v)}<span></span></div>`).join("")+`<div class="note"><span id="tci-scored"></span> · <span class="tcinote"></span></div>`;
+ L.firstChild.textContent=T.tciHow;L.querySelectorAll(".sw span").forEach((el,v)=>el.textContent=T["tci"+v]);L.querySelector(".tcinote").textContent=(LANG==="vi"?"Hàng trên là ":"Top row is the ")+T.tciBack;}
+
+/* ---------- ODK ---------- */
+let syl="pa",run=null;
+document.querySelectorAll("[data-syl]").forEach(b=>b.addEventListener("click",()=>{if(run)return;syl=b.dataset.syl;document.querySelectorAll("[data-syl]").forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"));$("#pad-big").textContent="/"+syl+"/";renderTrials()}));
+function analyse(taps){if(!taps.length)return{valid:false,count:0,rate:0,t0:null,why:T.noTap};
+ const t0=taps[0];const n=taps.filter(t=>t>=t0&&t<t0+5000).length;const rate=n/5;
+ if(t0>1000)return{valid:false,count:n,rate,t0,why:T.late};return{valid:true,count:n,rate,t0};}
+function startTrial(){if(run)return;if(S.odk[syl].length>=3){$("#odk-hint").textContent=T.enough+"/"+syl+"/"+T.enough2;return}
+ const pad=$("#pad"),msg=$("#pad-msg"),big=$("#pad-big"),bar=$("#prog");$("#odk-start").disabled=true;$("#odk-hint").textContent="";
+ let c=3;big.textContent=c;msg.textContent=T.ready;run={phase:"count",taps:[]};
+ const tick=setInterval(()=>{c--;if(c>0){big.textContent=c;return}clearInterval(tick);
+  run.phase="rec";run.start=performance.now();pad.classList.add("live");big.textContent="0";msg.textContent=T.tapEach+"/"+syl+"/";pad.focus();
+  const step=()=>{if(!run)return;const el=performance.now()-run.start;bar.style.width=Math.min(100,el/60)+"%";if(el>=6000){finish();return}requestAnimationFrame(step)};requestAnimationFrame(step)},1000);}
+function tap(e){if(!run||run.phase!=="rec")return;if(e)e.preventDefault();const t=performance.now()-run.start;if(t<6000){run.taps.push(Math.round(t));$("#pad-big").textContent=run.taps.length}}
+function finish(){const taps=run.taps;run=null;$("#pad").classList.remove("live");$("#prog").style.width="0";$("#odk-start").disabled=false;
+ const a=analyse(taps);S.odk[syl].push(Object.assign({taps,manual:false},a));save();
+ $("#pad-big").textContent="/"+syl+"/";$("#pad-msg").textContent=a.valid?`${T.trial} ${S.odk[syl].length}: ${a.count}${T.in5}${fmt(a.rate,1)}${T.perSec}`:a.why;
+ if(a.valid&&S.odk[syl].length>=3){const nx=SYL.find(s=>S.odk[s].length<3);if(nx)$("#odk-hint").textContent=T.doneSyl+"/"+syl+"/"+T.nextSyl+"/"+nx+"/.";}
+ renderTrials();upd();}
+$("#pad").addEventListener("pointerdown",tap);
+document.addEventListener("keydown",e=>{if(run&&run.phase==="rec"&&(e.code==="Space"||e.key===" "))tap(e)});
+$("#pad").addEventListener("click",e=>e.preventDefault());
+$("#odk-start").addEventListener("click",startTrial);
+function trialSvg(t){const W=300,x=ms=>4+ms/6000*(W-8);let s=`<svg viewBox="0 0 ${W} 26" preserveAspectRatio="none" aria-hidden="true"><rect x="4" y="11" width="${W-8}" height="4" rx="2" fill="var(--line)"/>`;
+ if(t.t0!==null&&!t.manual){s+=`<rect x="${x(t.t0)}" y="5" width="${x(Math.min(6000,t.t0+5000))-x(t.t0)}" height="16" rx="3" fill="var(--accent)" fill-opacity=".14"/>`;
+  t.taps.forEach(m=>{const inn=m>=t.t0&&m<t.t0+5000;s+=`<line x1="${x(m)}" x2="${x(m)}" y1="6" y2="20" stroke="${inn?"var(--accent)":"var(--muted)"}" stroke-width="1.5"/>`})}
+ for(let k=0;k<=6;k++)s+=`<line x1="${x(k*1000)}" x2="${x(k*1000)}" y1="22" y2="25" stroke="var(--muted)" stroke-width="1"/>`;return s+"</svg>";}
+function renderTrials(){const box=$("#trials");box.innerHTML="";
+ S.odk[syl].forEach((t,i)=>{const d=document.createElement("div");d.className="trial";
+  const lab=document.createElement("div");const b=document.createElement("b");b.textContent=`${T.trial} ${i+1}`;const del=document.createElement("button");del.type="button";del.className="btn ghost sm";del.textContent=T.del;del.addEventListener("click",()=>{S.odk[syl].splice(i,1);save();renderTrials();upd()});lab.append(b,document.createElement("br"),del);
+  const g=document.createElement("div");if(t.manual){g.className="note";g.textContent=T.manualNote}else g.innerHTML=trialSvg(t);
+  const v=document.createElement("div");v.className="val"+(t.valid?"":" bad");v.textContent=t.valid?`${t.count} ${T.syllables} · ${fmt(t.rate,1)}${T.perS}`:(t.why||T.invalid);d.append(lab,g,v);box.append(d)});
+ if(S.odk[syl].length<3){const m=document.createElement("div");m.className="manual";const sp=document.createElement("span");sp.textContent=T.manualTxt;const inp=document.createElement("input");inp.type="number";inp.min=0;inp.max=60;inp.id="man-n";inp.setAttribute("aria-label",T.manualTxt);
+  const add=document.createElement("button");add.type="button";add.className="btn ghost sm";add.textContent=T.addTrial;m.append(sp,inp,add);box.append(m);
+  add.addEventListener("click",()=>{const n=parseInt(inp.value,10);if(isNaN(n))return;S.odk[syl].push({taps:[],manual:true,valid:true,count:n,rate:n/5,t0:null});save();renderTrials();upd()})}
+ const r=sc();$("#odksum").innerHTML=SYL.map(s=>{const o=r.odk[s];return`<div><small>/${s}/ · ${S.odk[s].filter(t=>t.valid).length}/3${T.trialsOf}</small><b class="num">${o?fmt(o.mean,2):"–"}</b>${o?(o.mean<6?`<span class="pill pos">&lt; 6${LANG==="vi"?",":"."}0</span>`:`<span class="pill neg">≥ 6${LANG==="vi"?",":"."}0</span>`):`<span class="pill na">${T.notYet}</span>`}</div>`}).join("");}
+
+/* ---------- results ---------- */
+function yn(v){return v===1?T.yesW:v===0?T.noW:"–"}
+function renderResults(){const r=sc();const I=S.info;
+ $("#r-who").textContent=[I.id||T.noId,I.age?I.age+T.yrs:"",I.sex,I.setting,I.date].filter(Boolean).join(" · ");
+ const res={H1:r.tci!==null?fmt(r.tci,1)+" %":"–",H2:r.xi!==null?r.xi+"/25":"–",H3:r.cs!==null?fmt(r.cs,1)+"/100":"–",
+  H4:SYL.map(s=>r.odk[s]?`/${s}/ ${fmt(r.odk[s].mean,1)}`:`/${s}/ –`).join(" · "),H5:T.h5Res,
+  H6:`${T.b1} ${yn(r.b1)} · ${T.b2s} ${yn(S.b2)} · ${T.b3s} ${yn(S.b3)}`,H7:r.eat!==null?r.eat+"/40":"–"};
+ const keys=["H1","H2","H3","H4","H5","H6","H7"];
+ const tb=document.createElement("tbody");keys.forEach(k=>{const tr=document.createElement("tr");
+  const cells=[[k,"code"],[T.fn[k]],[T.by[k]],[res[k],"num"],[T.cut[k],"num"],[null],[T.acc[k],"note"]];
+  cells.forEach(([txt,cls],j)=>{const td=document.createElement("td");if(cls)td.className=cls;if(j===5)td.innerHTML=pill(r[k],k==="H2");else td.textContent=txt;tr.append(td)});tb.append(tr)});
+ const tbl=$("#restbl");tbl.innerHTML="";const th=document.createElement("thead");th.innerHTML="<tr><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr>";[ "",T.thFn,T.thBy,T.thRes,T.thCut,T.thCls,T.thAcc].forEach((t,i)=>th.querySelectorAll("th")[i].textContent=t);tbl.append(th,tb);
+ const meas=keys.filter(k=>k!=="H5");const pos=meas.filter(k=>r[k]===true).length,unk=meas.filter(k=>r[k]===null).length;
+ let cls,lab,txt;
+ if(pos>=3){cls="pos";lab=T.vPos;txt=T.vPosTxt}
+ else if(unk>0&&pos+unk>=2){cls="na";lab=T.vNa;txt=T.vNaTxt1+unk+T.vNaTxt2}
+ else if(pos===2){cls="tmp";lab=T.vBorder;txt=T.vBorderTxt}
+ else{cls="neg";lab=T.vNeg;txt=T.vNegTxt}
+ const v=$("#verdict");v.innerHTML=`<div class="count">${pos}<small>/6${T.measured}</small></div><div><span class="pill ${cls}"></span><div style="margin-top:6px" class="vt"></div><div class="note vh"></div></div>`;
+ v.querySelector(".pill").textContent=lab;v.querySelector(".vt").textContent=txt;v.querySelector(".vh").textContent=T.hint+yn(S.d1)+T.hint2+yn(S.d2)+".";
+ $("#csvout").value=csv(r);}
+function csv(r){const h=[],v=[];const add=(k,x)=>{h.push(k);v.push(x===null||x===undefined?"":x)};
+ add("lang",LANG);Object.entries(S.info).forEach(([k,x])=>add(k,x));S.eat.forEach((x,i)=>add("eat"+(i+1),x));add("eat_total",r.eat);add("b1_derived",r.b1);add("b2",S.b2);add("b3",S.b3);
+ S.food.forEach((x,i)=>add("food"+(i+1),x));add("cs20",r.cs);S.xi.forEach((x,i)=>add("xi"+(i+1),x));add("xi_total",r.xi);add("d1",S.d1);add("d2",S.d2);
+ SYL.forEach(s=>{for(let i=0;i<3;i++){const t=S.odk[s][i];add(`odk_${s}_${i+1}`,t&&t.valid?t.rate.toFixed(2):"")}add(`odk_${s}_mean`,r.odk[s]?r.odk[s].mean:"")});
+ S.tci.forEach((x,i)=>add("tci"+(i+1),x));add("tci_pct",r.tci);
+ ["H1","H2","H3","H4","H6","H7"].forEach(k=>add(k,r[k]===null?"":r[k]?1:0));add("H5","");add("n_positive",["H1","H2","H3","H4","H6","H7"].filter(k=>r[k]===true).length);
+ const q=x=>{x=String(x);return/[",\n]/.test(x)?'"'+x.replace(/"/g,'""')+'"':x};return h.map(q).join(",")+"\n"+v.map(q).join(",");}
+$("#btn-copy").addEventListener("click",()=>{const t=$("#csvout").value;const done=()=>{$("#toast").textContent=T.copied;setTimeout(()=>$("#toast").textContent="",2500)};
+ if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done,()=>{$("#csvout").select();$("#toast").textContent=T.selected})}else{$("#csvout").select();$("#toast").textContent=T.selected}});
+let dl=null;
+(async()=>{try{dl=window.claude&&window.claude.use?await window.claude.use("downloads"):null}catch(e){dl=null}if(!dl){dl={save:async({filename,data})=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([data],{type:"text/csv;charset=utf-8"}));a.download=filename;document.body.append(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)}}}$("#btn-dl").hidden=false})();
+$("#btn-dl").addEventListener("click",async()=>{if(!dl)return;try{await dl.save({filename:"OHF-SQ_"+(S.info.id||T.file)+".csv",data:"﻿"+$("#csvout").value});$("#toast").textContent=T.saved}catch(e){$("#toast").textContent=e&&e.code==="declined"?T.cancel:T.noSave}});
+
+function bindReset(){const w=$("#reset-wrap");w.innerHTML="";const b=document.createElement("button");b.type="button";b.className="btn ghost";b.textContent=T.reset;w.append(b);
+ b.onclick=()=>{w.innerHTML="";const q=document.createElement("span");q.textContent=T.resetQ;const y=document.createElement("button");y.type="button";y.className="btn";y.textContent=T.del;const n=document.createElement("button");n.type="button";n.className="btn ghost";n.textContent=T.keep;w.append(q,y,n);
+  y.onclick=()=>{S=blank();save();initAll();bindReset();$("#draft-note").textContent=T.draftNew};n.onclick=bindReset}}
+$("#btn-sample").addEventListener("click",()=>{S=blank();S.info={id:"DEMO-001",date:new Date().toISOString().slice(0,10),age:"78",sex:T.sampleSex,setting:T.sampleSetting,exam:T.sampleExam};
+ S.eat=[0,1,1,2,1,0,1,1,1,0];S.b2=1;S.b3=0;S.food=[2,2,2,2,2,2,2,2,1,2,2,2,1,1,0,0,0,1,0,"x"];S.xi=[2,3,1,3,2];S.d1=1;S.d2=0;
+ const mk=arr=>arr.map(n=>{const taps=[];const t0=350;for(let k=0;k<n;k++)taps.push(Math.round(t0+k*5000/n));for(let k=0;k<Math.round(n/5);k++)taps.push(Math.round(t0+5000+k*5000/n));return Object.assign({taps,manual:false},analyse(taps))});
+ S.odk={pa:mk([31,30,32]),ta:mk([28,27,29]),ka:mk([26,27,25])};S.tci=[2,1,1,1,1,0,0,0,0];save();initAll();$("#draft-note").textContent=T.draftSample;});
+
+function initAll(){fillInfo();buildQ();legend();buildTCI();renderTrials();upd()}
+bindReset();initAll();go("info");
+})();
+</script>
+
+</body>
+</html>
